@@ -1,13 +1,12 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { Grommet } from 'grommet';
-import PageTemplate from './PageTemplate';
+import { Grommet, Box, Grid } from 'grommet';
 
 const theme = {
   global: {
     font: {
-      family: 'Roboto',
-      size: '14px',
+      family: 'Spoqa Han Sans, Spoqa Han Sans JP, Sans-serif',
+      size: '16px',
       height: '20px',
     },
   },
@@ -15,11 +14,7 @@ const theme = {
 
 class App extends Component {
   render() {
-    return (
-      <Grommet theme={theme}>
-        <PageTemplate>Child</PageTemplate>
-      </Grommet>
-    );
+    return ();
   }
 }
 
