@@ -17,7 +17,7 @@ function TopContent(props) {
   return (
     <Grid container>
       <Typography gutterBottom variant="h5" component="h2" className={classes.topContentText}>
-        All Petitions
+        Top 3
       </Typography>
       <Grid container spacing={16} direction="row">
         <Grid item xs={4}>

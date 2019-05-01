@@ -25,7 +25,7 @@ class App extends Component {
           <Grid item xs>
             <Menu />
           </Grid>
-          <Grid item xs={9}>
+          <Grid item xs={10}>
             <Main />
           </Grid>
         </Grid>
