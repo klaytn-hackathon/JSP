@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 
 import Menu from './Menu';
+import Main from './Main';
 
 const styles = () => ({
   root: {
@@ -20,12 +21,12 @@ class App extends Component {
 
     return (
       <div className={classes.root}>
-        <Grid container spacing={24}>
+        <Grid container spacing={0}>
           <Grid item xs>
             <Menu />
           </Grid>
           <Grid item xs={9}>
-            <div />
+            <Main />
           </Grid>
         </Grid>
       </div>
