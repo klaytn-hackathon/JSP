@@ -1,21 +1,40 @@
+/* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { Grommet, Box, Grid } from 'grommet';
+import PropTypes from 'prop-types';
+import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@material-ui/core/styles';
 
-const theme = {
-  global: {
-    font: {
-      family: 'Spoqa Han Sans, Spoqa Han Sans JP, Sans-serif',
-      size: '16px',
-      height: '20px',
-    },
+const styles = () => ({
+  root: {
+    flexGrow: 1,
   },
-};
+});
 
 class App extends Component {
   render() {
-    return ();
+    const { classes } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <Grid container spacing={24}>
+          <Grid item xs>
+            <div />
+          </Grid>
+          <Grid item xs={8}>
+            <div />
+          </Grid>
+          <Grid item xs>
+            <div />
+          </Grid>
+        </Grid>
+      </div>
+    );
   }
 }
 
-export default App;
+App.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(App);
