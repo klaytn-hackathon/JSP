@@ -5,9 +5,12 @@ import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 
+import Menu from './Menu';
+
 const styles = () => ({
   root: {
     flexGrow: 1,
+    fontFamily: 'Spoqa Han Sans, Spoqa Han Sans JP, Sans-serif',
   },
 });
 
@@ -19,12 +22,9 @@ class App extends Component {
       <div className={classes.root}>
         <Grid container spacing={24}>
           <Grid item xs>
-            <div />
+            <Menu />
           </Grid>
-          <Grid item xs={8}>
-            <div />
-          </Grid>
-          <Grid item xs>
+          <Grid item xs={9}>
             <div />
           </Grid>
         </Grid>
