@@ -2,10 +2,9 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Search } from '@material-ui/icons';
-import {
-  Grid, Typography,
-} from '@material-ui/core';
-import PetitionCard from '../PetitionCard';
+import { Grid } from '@material-ui/core';
+import TopContent from './TopContent';
+import MainContent from './MainContent';
 
 const styles = theme => ({
   root: {
@@ -18,12 +17,8 @@ const styles = theme => ({
     color: '#94979b',
     padding: theme.spacing.unit * 2,
   },
-  topContent: {
+  content: {
     padding: theme.spacing.unit * 4,
-  },
-  topContentText: {
-    fontWeight: 'bold',
-    marginBottom: '40px',
   },
 });
 
@@ -48,21 +43,10 @@ function Main(props) {
           Search
         </Grid>
       </Grid>
-      <Grid container className={classes.topContent}>
-        <Typography gutterBottom variant="h5" component="h2" className={classes.topContentText}>
-          TOP3
-        </Typography>
-        <Grid container spacing={16} direction="row">
-          <Grid item xs={4}>
-            <PetitionCard />
-          </Grid>
-          <Grid item xs={4}>
-            <PetitionCard />
-          </Grid>
-          <Grid item xs={4}>
-            <PetitionCard />
-          </Grid>
-        </Grid>
+
+      <Grid container direction="column" className={classes.content}>
+        <TopContent />
+        <MainContent />
       </Grid>
     </Grid>
   );
