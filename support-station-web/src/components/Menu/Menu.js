@@ -64,7 +64,7 @@ function Menu(props) {
       </Grid>
       <Grid container spacing={40} direction="column" className={classes.subMenu}>
         <Grid item>
-          <Grid container spacing={12} direction="row" justify="center" className={classes.icon}>
+          <Grid container spacing={8} direction="row" justify="center" className={classes.icon}>
             <Grid item xs={3}>
               <ViewQuilt />
             </Grid>
@@ -75,7 +75,7 @@ function Menu(props) {
           </Grid>
         </Grid>
         <Grid item>
-          <Grid container spacing={12} direction="row" justify="center" className={classes.icon}>
+          <Grid container spacing={8} direction="row" justify="center" className={classes.icon}>
             <Grid item xs={3}>
               <Timer />
             </Grid>
@@ -86,7 +86,7 @@ function Menu(props) {
           </Grid>
         </Grid>
         <Grid item>
-          <Grid container spacing={12} direction="row" justify="center" className={classes.icon}>
+          <Grid container spacing={8} direction="row" justify="center" className={classes.icon}>
             <Grid item xs={3}>
               <TimerOff />
             </Grid>
