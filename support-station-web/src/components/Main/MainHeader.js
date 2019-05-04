@@ -18,23 +18,48 @@ const styles = theme => ({
 class MainHeader extends Component {
   state = {
     open: false,
-    selectedValue: {},
   };
 
-  handleClickOpen = () => {
+  handleLogin = () => {
     this.setState({
       open: true,
     });
   };
 
-  handleClose = (value) => {
-    this.setState({ selectedValue: value, open: false });
+  handleLogout = () => {
+    // eslint-disable-next-line no-undef
+    sessionStorage.removeItem('support_station_id');
+    // eslint-disable-next-line no-undef
+    window.location.reload();
+  }
+
+  handleClose = () => {
+    this.setState({ open: false });
   }
 
   render() {
     // eslint-disable-next-line react/prop-types
     const { classes } = this.props;
-    const { selectedValue, open } = this.state;
+    const { open } = this.state;
+
+    // eslint-disable-next-line no-undef
+    const signInContent = sessionStorage.getItem('support_station_id')
+      ? (
+        <Button className={classes.loginButton} onClick={this.handleLogout}>
+            Logout
+        </Button>
+      )
+      : (
+        <div>
+          <Button className={classes.loginButton} onClick={this.handleLogin}>
+            Login
+          </Button>
+          <LoginDialog
+            open={open}
+            onClose={this.handleClose}
+          />
+        </div>
+      );
 
     return (
       <Grid
@@ -52,14 +77,7 @@ class MainHeader extends Component {
         Search
         </Grid>
         <Grid item xs={2}>
-          <Button className={classes.loginButton} onClick={this.handleClickOpen}>
-          Login
-          </Button>
-          <LoginDialog
-            selectedValue={selectedValue}
-            open={open}
-            onClose={this.handleClose}
-          />
+          { signInContent }
         </Grid>
       </Grid>
     );
