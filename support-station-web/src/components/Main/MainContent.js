@@ -1,6 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid, Typography, Button } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import PetitionCard from './PetitionCard';
 
 const styles = () => ({
@@ -8,6 +9,9 @@ const styles = () => ({
     fontWeight: 'bold',
     marginTop: '56px',
     marginBottom: '40px',
+  },
+  linkButton: {
+    textDecoration: 'none',
   },
   writeButtonContainer: {
     textAlign: 'right',
@@ -27,9 +31,11 @@ function MainContent(props) {
   // eslint-disable-next-line no-undef
   const writeButton = sessionStorage.getItem('support_station_id')
     ? (
-      <Button variant="contained" className={classes.writeButton}>
-        <div className={classes.writeButtonText}>Write a petition</div>
-      </Button>
+      <Link className={classes.linkButton} to="/new">
+        <Button variant="contained" className={classes.writeButton}>
+          <div className={classes.writeButtonText}>Write a petition</div>
+        </Button>
+      </Link>
     ) : ('');
 
   return (

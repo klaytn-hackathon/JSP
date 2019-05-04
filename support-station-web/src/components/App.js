@@ -1,41 +1,29 @@
-/* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { Route } from 'react-router-dom';
 
-import Menu from './Menu';
-import Main from './Main';
+import { Home, New } from '../pages';
 
-const styles = () => ({
-  root: {
-    flexGrow: 1,
+const theme = createMuiTheme({
+  palette: {
+    primary: { main: '#3a84ff' },
+  },
+  typography: {
+    useNextVariants: true,
     fontFamily: 'Spoqa Han Sans, Spoqa Han Sans JP, Sans-serif',
   },
 });
 
 class App extends Component {
   render() {
-    const { classes } = this.props;
-
     return (
-      <div className={classes.root}>
-        <Grid container spacing={0}>
-          <Grid item xs>
-            <Menu />
-          </Grid>
-          <Grid item xs={10}>
-            <Main />
-          </Grid>
-        </Grid>
-      </div>
+      <MuiThemeProvider theme={theme}>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/new" component={New} />
+      </MuiThemeProvider>
     );
   }
 }
 
-App.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(App);
+export default App;
