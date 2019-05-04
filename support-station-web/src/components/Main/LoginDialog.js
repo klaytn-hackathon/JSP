@@ -32,10 +32,10 @@ class LoginDialog extends Component {
   };
 
   googleResponse = (res) => {
-    const { onClose } = this.props;
     // eslint-disable-next-line no-undef
     sessionStorage.setItem('support_station_id', res.googleId);
-    onClose();
+    // eslint-disable-next-line no-undef
+    window.location.reload();
   };
 
   onFailure = (error) => {

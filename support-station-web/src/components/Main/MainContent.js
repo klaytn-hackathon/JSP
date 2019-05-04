@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography, Button } from '@material-ui/core';
 import PetitionCard from './PetitionCard';
 
 const styles = () => ({
@@ -9,17 +9,42 @@ const styles = () => ({
     marginTop: '56px',
     marginBottom: '40px',
   },
+  writeButtonContainer: {
+    textAlign: 'right',
+  },
+  writeButton: {
+    backgroundColor: '#3a84ff',
+    borderRadius: '0px 0px 0px 0px;',
+  },
+  writeButtonText: {
+    color: 'white',
+  },
 });
 
 function MainContent(props) {
   // eslint-disable-next-line react/prop-types
   const { classes } = props;
+  // eslint-disable-next-line no-undef
+  const writeButton = sessionStorage.getItem('support_station_id')
+    ? (
+      <Button variant="contained" className={classes.writeButton}>
+        <div className={classes.writeButtonText}>Write a petition</div>
+      </Button>
+    ) : ('');
 
   return (
-    <Grid container>
+    <div>
       <Typography gutterBottom variant="h5" component="h2" className={classes.mainContentText}>
-        All Petitions
+        <Grid container direction="row">
+          <Grid item xs>
+            All Petitions
+          </Grid>
+          <Grid item xs className={classes.writeButtonContainer}>
+            {writeButton}
+          </Grid>
+        </Grid>
       </Typography>
+
       <Grid container spacing={16} direction="row">
         <Grid item xs={4}>
           <PetitionCard />
@@ -31,7 +56,7 @@ function MainContent(props) {
           <PetitionCard />
         </Grid>
       </Grid>
-    </Grid>
+    </div>
   );
 }
 export default withStyles(styles)(MainContent);
