@@ -52,10 +52,6 @@ func show(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, er
 }
 
 func create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	if req.Headers["Content-Type"] != "application/json" {
-		return clientError(http.StatusNotAcceptable)
-	}
-
 	pt := new(petition)
 	err := json.Unmarshal([]byte(req.Body), pt)
 	if err != nil {
@@ -73,6 +69,7 @@ func create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
+		Headers: map[string]string{"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials":"true"},
 	}, nil
 }
 
@@ -81,6 +78,7 @@ func serverError(err error) (events.APIGatewayProxyResponse, error) {
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusInternalServerError,
+		Headers: map[string]string{"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials":"true"},
 		Body:       http.StatusText(http.StatusInternalServerError),
 	}, nil
 }
@@ -88,6 +86,7 @@ func serverError(err error) (events.APIGatewayProxyResponse, error) {
 func clientError(status int) (events.APIGatewayProxyResponse, error) {
 	return events.APIGatewayProxyResponse{
 		StatusCode: status,
+		Headers: map[string]string{"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials":"true"},
 		Body:       http.StatusText(status),
 	}, nil
 }

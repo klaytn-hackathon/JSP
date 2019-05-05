@@ -9,6 +9,7 @@ import {
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import 'medium-draft/lib/index.css';
+import axios from 'axios';
 
 const styles = theme => ({
   newPage: {
@@ -41,6 +42,7 @@ class New extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      title: '',
       editorState: createEditorState(),
     };
 
@@ -50,52 +52,89 @@ class New extends Component {
       });
     };
 
+    this.onTitleTextChange = (event) => {
+      this.setState({
+        title: event.target.value,
+      });
+    };
+
+    this.onSubmit = (event) => {
+      event.preventDefault();
+
+      const { editorState, title } = this.state;
+
+      // eslint-disable-next-line no-undef
+      const authorID = sessionStorage.getItem('support_station_id');
+      const params = {
+        author_id: authorID,
+        title,
+        content: JSON.stringify(editorState),
+      };
+
+      axios.defaults.headers = {
+        'Content-Type': 'application/json; charset=utf-8',
+      };
+      axios.post(process.env.SERVER_ADDRESS, params)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+
     this.refsEditor = React.createRef();
   }
 
   render() {
     // eslint-disable-next-line react/prop-types
     const { classes } = this.props;
-    const { editorState } = this.state;
+    const { editorState, title } = this.state;
 
     return (
-      <Grid className={classes.newPage} container spacing={40} direction="column">
-        <Grid item>
-          <Typography className={classes.title}>
-            Petition Title
-          </Typography>
-          <TextField
-            id="standard-full-width"
-            className={classes.textField}
-            fullWidth
-            margin="normal"
-            variant="standard"
-          />
-        </Grid>
-        <Grid item>
-          <Typography className={classes.content}>
-            Content
-          </Typography>
-          <div className={classes.textField}>
-            <Editor
-              ref={this.refsEditor}
-              editorState={editorState}
-              onChange={this.onChange}
-              placeholder="Write your story"
+      <form onSubmit={this.onSubmit}>
+        <Grid className={classes.newPage} container spacing={40} direction="column">
+          <Grid item>
+            <Typography className={classes.title}>
+              Petition Title
+            </Typography>
+            <TextField
+              id="standard-full-width"
+              className={classes.textField}
+              fullWidth
+              margin="normal"
+              variant="standard"
+              value={title}
+              onChange={this.onTitleTextChange}
             />
-          </div>
-        </Grid>
-        <Grid item className={classes.buttonGroup}>
-          <Button>
-            Post
-          </Button>
-          <Link className={classes.link} to="/">
-            <Button>
-              Cancel
+          </Grid>
+          <Grid item>
+            <Typography className={classes.content}>
+              Content
+            </Typography>
+            <div className={classes.textField}>
+              <Editor
+                ref={this.refsEditor}
+                editorState={editorState}
+                onChange={this.onChange}
+                placeholder="Write your story"
+              />
+            </div>
+          </Grid>
+          <Grid item className={classes.buttonGroup}>
+            <Button
+              type="submit"
+            >
+              Post
             </Button>
-          </Link>
+            <Link className={classes.link} to="/">
+              <Button>
+                Cancel
+              </Button>
+            </Link>
+          </Grid>
         </Grid>
-      </Grid>
+      </form>
     );
   }
 }

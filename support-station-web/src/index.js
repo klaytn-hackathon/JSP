@@ -5,6 +5,8 @@ import './styles/main.scss';
 import Root from './client/Root';
 import * as serviceWorker from './serviceWorker';
 
+require('dotenv').config();
+
 ReactDOM.render(<Root />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

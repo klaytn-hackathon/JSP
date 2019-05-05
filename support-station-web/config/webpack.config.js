@@ -43,6 +43,9 @@ const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
+const Dotenv = require('dotenv-webpack');
+
+const { definitions } = new Dotenv();
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
 module.exports = function(webpackEnv) {
@@ -603,6 +606,7 @@ module.exports = function(webpackEnv) {
           // The formatter is invoked directly in WebpackDevServerUtils during development
           formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
+      new webpack.DefinePlugin({ ...definitions }),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
