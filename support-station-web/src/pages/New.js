@@ -6,10 +6,11 @@ import {
 import {
   Grid, TextField, Typography, Button,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import 'medium-draft/lib/index.css';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 const styles = theme => ({
   newPage: {
@@ -44,6 +45,7 @@ class New extends Component {
     this.state = {
       title: '',
       editorState: createEditorState(),
+      redirect: false,
     };
 
     this.onChange = (editorState) => {
@@ -62,11 +64,12 @@ class New extends Component {
       event.preventDefault();
 
       const { editorState, title } = this.state;
+      const { onSuccess, onFailed } = this.props;
 
       // eslint-disable-next-line no-undef
       const authorID = sessionStorage.getItem('support_station_id');
       const params = {
-        author_id: authorID,
+        author_id: `${authorID}_${title}`,
         title,
         content: JSON.stringify(editorState),
       };
@@ -76,10 +79,13 @@ class New extends Component {
       };
       axios.post(process.env.SERVER_ADDRESS, params)
         .then((res) => {
-          console.log(res);
+          if (res.status === 201 || res.status === 200) {
+            onSuccess();
+            this.setState({ redirect: true });
+          }
         })
         .catch((err) => {
-          console.error(err);
+          onFailed(err);
         });
     };
 
@@ -89,7 +95,11 @@ class New extends Component {
   render() {
     // eslint-disable-next-line react/prop-types
     const { classes } = this.props;
-    const { editorState, title } = this.state;
+    const { editorState, title, redirect } = this.state;
+
+    if (redirect) {
+      return <Redirect to="/" />;
+    }
 
     return (
       <form onSubmit={this.onSubmit}>
@@ -138,5 +148,10 @@ class New extends Component {
     );
   }
 }
+
+New.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onFailed: PropTypes.func.isRequired,
+};
 
 export default withStyles(styles)(New);
