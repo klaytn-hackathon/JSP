@@ -69,7 +69,7 @@ class New extends Component {
       // eslint-disable-next-line no-undef
       const authorID = sessionStorage.getItem('support_station_id');
       const params = {
-        author_id: `${authorID}_${title}`,
+        author_id: authorID,
         title,
         content: JSON.stringify(editorState),
       };
@@ -81,6 +81,9 @@ class New extends Component {
         .then((res) => {
           if (res.status === 201 || res.status === 200) {
             onSuccess();
+            this.setState({ redirect: true });
+          } else {
+            onFailed();
             this.setState({ redirect: true });
           }
         })

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"petitions/db"
+	"petitions/models"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -12,16 +14,16 @@ import (
 
 var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
 
-type petition struct {
-	AuthorID string `json:"author_id" dynamodbav:"AuthorID"`
-	Title    string `json:"title" dynamodbav:"Title"`
-	Content  string `json:"content" dynamodbav:"Content"`
-}
-
 func router(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	switch req.HTTPMethod {
-	case "GET":
-		return show(req)
+	// case "GET":
+	// 	authorID := req.QueryStringParameters["author_id"]
+	// 	if authorID == "" {
+	// 		return show(req)
+	// 	} else {
+	// 		return index(req)
+	// 	}
+
 	case "POST":
 		return create(req)
 	default:
@@ -29,47 +31,65 @@ func router(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 	}
 }
 
-func show(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	authorID := req.QueryStringParameters["author_id"]
+// func index(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+// 	limit := req.QueryStringParameters["limit"]
 
-	pt, err := getItem(authorID)
-	if err != nil {
-		return serverError(err)
-	}
-	if pt == nil {
-		return clientError(http.StatusNotFound)
-	}
+// 	queryString := map[string]string{}
+// 	petitions, err := getItems(&queryString)
+// 	if err != nil {
+// 		return serverError(err)
+// 	}
 
-	js, err := json.Marshal(pt)
-	if err != nil {
-		return serverError(err)
-	}
+// 	js, err := json.Marshal(pt)
+// 	if err != nil {
+// 		return serverError(err)
+// 	}
 
-	return events.APIGatewayProxyResponse{
-		StatusCode: http.StatusOK,
-		Body:       string(js),
-	}, nil
-}
+// 	return events.APIGatewayProxyResponse{
+// 		StatusCode: http.StatusOK,
+// 		Headers:    headers(),
+// 		Body:       string(js),
+// 	}, nil
+// }
+
+// func show(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+// 	authorID := req.QueryStringParameters["author_id"]
+
+// 	pt, err := getItem(authorID)
+// 	if err != nil {
+// 		return serverError(err)
+// 	}
+// 	if pt == nil {
+// 		return clientError(http.StatusNotFound)
+// 	}
+
+// 	js, err := json.Marshal(pt)
+// 	if err != nil {
+// 		return serverError(err)
+// 	}
+
+// 	return events.APIGatewayProxyResponse{
+// 		StatusCode: http.StatusOK,
+// 		Headers:    headers(),
+// 		Body:       string(js),
+// 	}, nil
+// }
 
 func create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	pt := new(petition)
+	pt := new(models.Petition)
 	err := json.Unmarshal([]byte(req.Body), pt)
 	if err != nil {
 		return clientError(http.StatusUnprocessableEntity)
 	}
 
-	if pt.Title == "" || pt.Content == "" || pt.AuthorID == "" {
-		return clientError(http.StatusBadRequest)
+	dbErr := db.PutItem(pt)
+	if dbErr != nil {
+		return serverError(dbErr)
 	}
-
-	err = putItem(pt)
-	if err != nil {
-		return serverError(err)
-	}
-
+	
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
-		Headers: map[string]string{"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials":"true"},
+		Headers:    headers(),
 	}, nil
 }
 
@@ -78,17 +98,21 @@ func serverError(err error) (events.APIGatewayProxyResponse, error) {
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusInternalServerError,
-		Headers: map[string]string{"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials":"true"},
-		Body:       http.StatusText(http.StatusInternalServerError),
+		Headers:    headers(),
+		Body:       err.Error(),
 	}, nil
 }
 
 func clientError(status int) (events.APIGatewayProxyResponse, error) {
 	return events.APIGatewayProxyResponse{
 		StatusCode: status,
-		Headers: map[string]string{"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials":"true"},
+		Headers:    headers(),
 		Body:       http.StatusText(status),
 	}, nil
+}
+
+func headers() map[string]string {
+	return map[string]string{"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
 }
 
 func main() {
