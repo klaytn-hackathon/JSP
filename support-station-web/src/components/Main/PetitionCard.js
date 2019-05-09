@@ -4,6 +4,8 @@ import { CalendarToday, SupervisorAccount } from '@material-ui/icons';
 import {
   Grid, Card, CardContent, CardHeader, Button,
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import moment from 'moment';
 
 const styles = () => ({
   cardTag: {
@@ -12,8 +14,10 @@ const styles = () => ({
   cardTagText: {
     color: 'white',
   },
-  cardContent: {
-    padding: '12px',
+  cardTitle: {
+    padding: '20px',
+    fontWeight: 'bold',
+    fontFamily: 'Spoqa Han Sans, Spoqa Han Sans JP, Sans-serif',
   },
   cardFooter: {
     color: '#52575a',
@@ -22,12 +26,27 @@ const styles = () => ({
     fontSize: '14px',
     padding: '12px',
   },
+  cardDate: {
+    width: '69px',
+    height: '20px',
+    fontFamily: 'SpoqaHanSans',
+    fontSize: '14px',
+    fontWeight: '300',
+    fontStyle: 'normal',
+    fontStretch: 'normal',
+    lineHeight: 'normal',
+    letterSpacing: '-0.9px',
+    color: '#52575a',
+  },
 });
 
 function PetitionCard(props) {
   // eslint-disable-next-line react/prop-types
-  const { classes } = props;
+  const {
+    classes, title, createdAt, supportCount,
+  } = props;
 
+  const formattedDate = moment.utc(createdAt).local().format('YYYY-MM-DD');
   return (
     <Card>
       <CardHeader
@@ -37,7 +56,7 @@ function PetitionCard(props) {
           </Button>
         )}
       />
-      <CardContent className={classes.cardContent}>Content</CardContent>
+      <CardContent className={classes.cardTitle}>{title}</CardContent>
       <CardContent className={classes.cardFooter}>
         <Grid container direction="row">
           <Grid item xs={8}>
@@ -46,7 +65,9 @@ function PetitionCard(props) {
                 <CalendarToday fontSize="small" />
               </Grid>
               <Grid item xs>
-                September 14, 2016
+                <span className={classes.cardDate}>
+                  {formattedDate}
+                </span>
               </Grid>
             </Grid>
           </Grid>
@@ -56,7 +77,7 @@ function PetitionCard(props) {
                 <SupervisorAccount fontSize="small" />
               </Grid>
               <Grid item xs>
-                519,199명
+                {supportCount}
               </Grid>
             </Grid>
           </Grid>
@@ -65,5 +86,20 @@ function PetitionCard(props) {
     </Card>
   );
 }
+
+PetitionCard.defaultProps = {
+  classes: {},
+  title: '',
+  createdAt: '',
+  supportCount: 0,
+};
+
+PetitionCard.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  classes: PropTypes.object,
+  title: PropTypes.string,
+  createdAt: PropTypes.string,
+  supportCount: PropTypes.number,
+};
 
 export default withStyles(styles)(PetitionCard);

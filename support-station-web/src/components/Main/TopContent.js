@@ -25,6 +25,7 @@ class TopContent extends Component {
   componentDidMount() {
     const query = {
       limit: 3,
+      order: 'support_count',
     };
 
     const stringified = queryString.stringify(query);
@@ -32,7 +33,7 @@ class TopContent extends Component {
       axios.get(`https://5wpzfbe239.execute-api.ap-northeast-2.amazonaws.com/staging/petitions?${stringified}`).then((response) => {
         if (response.status === 200) {
           this.setState(() => ({
-            petitions: JSON.parse(response.data),
+            petitions: response.data,
           }));
         }
       });
@@ -45,19 +46,22 @@ class TopContent extends Component {
     // eslint-disable-next-line react/prop-types
     const { classes } = this.props;
     const { petitions } = this.state;
-
     return (
       <Grid container>
         <Typography gutterBottom variant="h5" component="h2" className={classes.topContentText}>
         Top 3 Petitions
         </Typography>
         <Grid container spacing={16} direction="row">
-          {/* {
+          {
             petitions.map(petition => (
               <Grid item xs={4}>
-                <PetitionCard />
+                <PetitionCard
+                  title={petition.title}
+                  createdAt={petition.created_at}
+                  supportCount={petition.support_count}
+                />
               </Grid>
-            ))} */}
+            ))}
         </Grid>
       </Grid>
     );
