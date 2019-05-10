@@ -8,7 +8,8 @@ import MainHeader from './MainHeader';
 
 const styles = theme => ({
   root: {
-    height: '100vh',
+    height: '100%',
+    minHeight: '1000px',
     backgroundColor: '#ffffff',
     boxShadow: '1px 0 10px 0 rgba(0, 0, 0, 0.03)',
   },

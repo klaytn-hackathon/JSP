@@ -42,7 +42,7 @@ class MainContent extends Component {
     this.state = {
       petitions: [],
       offset: 0,
-      perPage: 9,
+      perPage: 6,
     };
   }
 

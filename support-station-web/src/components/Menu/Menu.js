@@ -5,7 +5,7 @@ import { ViewQuilt, Timer, TimerOff } from '@material-ui/icons';
 
 const styles = () => ({
   root: {
-    height: '100vh',
+    height: '100%',
     backgroundColor: '#e8eef7',
     boxShadow: '1px 0 10px 0 rgba(0, 0, 0, 0.03)',
   },
