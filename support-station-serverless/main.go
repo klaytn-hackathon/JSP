@@ -16,14 +16,9 @@ var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
 
 func router(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	switch req.HTTPMethod {
-	// case "GET":
-	// 	authorID := req.QueryStringParameters["author_id"]
-	// 	if authorID == "" {
-	// 		return show(req)
-	// 	} else {
-	// 		return index(req)
-	// 	}
-
+	case "GET":
+		// authorID := req.QueryStringParameters["author_id"]
+		return index(req)
 	case "POST":
 		return create(req)
 	default:
@@ -31,26 +26,34 @@ func router(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 	}
 }
 
-// func index(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-// 	limit := req.QueryStringParameters["limit"]
+func index(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	queryString := map[string]string{}
+	queryString["limit"] = req.QueryStringParameters["limit"]
+	queryString["order"] = req.QueryStringParameters["order"]
+	queryString["offset"] = req.QueryStringParameters["offset"]
 
-// 	queryString := map[string]string{}
-// 	petitions, err := getItems(&queryString)
-// 	if err != nil {
-// 		return serverError(err)
-// 	}
+	petitions, err := db.GetItems(&queryString)
+	if err != nil {
+		return serverError(err)
+	}
 
-// 	js, err := json.Marshal(pt)
-// 	if err != nil {
-// 		return serverError(err)
-// 	}
+	totalCount, err := db.GetTotalCount()
 
-// 	return events.APIGatewayProxyResponse{
-// 		StatusCode: http.StatusOK,
-// 		Headers:    headers(),
-// 		Body:       string(js),
-// 	}, nil
-// }
+	petitionsObj := map[string]interface{}{}
+	petitionsObj["petitions"] = petitions
+	petitionsObj["meta"] = models.Meta{TotalCount: totalCount}
+
+	finalized, err := json.Marshal(petitionsObj)
+	if err != nil {
+		return serverError(err)
+	}
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: http.StatusOK,
+		Headers:    headers(),
+		Body:       string(finalized),
+	}, nil
+}
 
 // func show(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 // 	authorID := req.QueryStringParameters["author_id"]

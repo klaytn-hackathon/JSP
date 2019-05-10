@@ -33,7 +33,7 @@ class TopContent extends Component {
       axios.get(`https://5wpzfbe239.execute-api.ap-northeast-2.amazonaws.com/staging/petitions?${stringified}`).then((response) => {
         if (response.status === 200) {
           this.setState(() => ({
-            petitions: response.data,
+            petitions: response.data.petitions,
           }));
         }
       });
@@ -54,7 +54,7 @@ class TopContent extends Component {
         <Grid container spacing={16} direction="row">
           {
             petitions.map(petition => (
-              <Grid item xs={4}>
+              <Grid item xs={4} key={Math.random()}>
                 <PetitionCard
                   title={petition.title}
                   createdAt={petition.created_at}

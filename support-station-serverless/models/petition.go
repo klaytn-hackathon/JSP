@@ -2,15 +2,16 @@ package models
 
 import (
 	"reflect"
-
-	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type Petition struct {
-	gorm.Model
-	AuthorID     string `json:"author_id"`
-	Title        string `json:"title"`
-	Content      string `json:"content"`
+	AuthorID     string    `json:"author_id"`
+	Title        string    `json:"title"`
+	Content      string    `json:"content"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"-"`
+	SupportCount uint      `json:"support_count"`
 }
 
 func (p *Petition) Values() []string {
