@@ -5,7 +5,7 @@ import { Route } from 'react-router-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import NewContainer from '../containers/NewContainer';
-import { Home } from '../pages';
+import { Home, Show } from '../pages';
 import reducers from '../reducers';
 
 const store = createStore(
@@ -27,7 +27,8 @@ function App() {
     <Provider store={store}>
       <MuiThemeProvider theme={theme}>
         <Route exact path="/" component={Home} />
-        <Route exact path="/new" component={NewContainer} />
+        <Route exact path="/petitions/new" component={NewContainer} />
+        <Route exact path="/petitions/:id" component={Show} />
       </MuiThemeProvider>
     </Provider>
   );

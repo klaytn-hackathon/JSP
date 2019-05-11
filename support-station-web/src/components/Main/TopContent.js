@@ -54,8 +54,9 @@ class TopContent extends Component {
         <Grid container spacing={16} direction="row">
           {
             petitions.map(petition => (
-              <Grid item xs={4} key={Math.random()}>
+              <Grid item xs={4} key={petition.id}>
                 <PetitionCard
+                  id={petition.id}
                   title={petition.title}
                   createdAt={petition.created_at}
                   supportCount={petition.support_count}

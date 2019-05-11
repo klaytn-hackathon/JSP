@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { CalendarToday, SupervisorAccount } from '@material-ui/icons';
 import {
@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 const styles = () => ({
   cardTag: {
@@ -43,47 +44,51 @@ const styles = () => ({
 function PetitionCard(props) {
   // eslint-disable-next-line react/prop-types
   const {
-    classes, title, createdAt, supportCount,
+    id, classes, title, createdAt, supportCount,
   } = props;
 
   const formattedDate = moment.utc(createdAt).local().format('YYYY-MM-DD');
   return (
-    <Card>
-      <CardHeader
-        avatar={(
-          <Button variant="contained" className={classes.cardTag}>
-            <div className={classes.cardTagText}>Environment</div>
-          </Button>
-        )}
-      />
-      <CardContent className={classes.cardTitle}>{title}</CardContent>
-      <CardContent className={classes.cardFooter}>
-        <Grid container direction="row">
-          <Grid item xs={8}>
+    <Fragment>
+      <Link style={{ textDecoration: 'none' }} to={`/petitions/${id}`}>
+        <Card>
+          <CardHeader
+            avatar={(
+              <Button variant="contained" className={classes.cardTag}>
+                <div className={classes.cardTagText}>Environment</div>
+              </Button>
+            )}
+          />
+          <CardContent className={classes.cardTitle}>{title}</CardContent>
+          <CardContent className={classes.cardFooter}>
             <Grid container direction="row">
-              <Grid item xs={2}>
-                <CalendarToday fontSize="small" />
+              <Grid item xs={8}>
+                <Grid container direction="row">
+                  <Grid item xs={2}>
+                    <CalendarToday fontSize="small" />
+                  </Grid>
+                  <Grid item xs>
+                    <span className={classes.cardDate}>
+                      {formattedDate}
+                    </span>
+                  </Grid>
+                </Grid>
               </Grid>
               <Grid item xs>
-                <span className={classes.cardDate}>
-                  {formattedDate}
-                </span>
+                <Grid container direction="row">
+                  <Grid item xs={4}>
+                    <SupervisorAccount fontSize="small" />
+                  </Grid>
+                  <Grid item xs>
+                    {supportCount}
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs>
-            <Grid container direction="row">
-              <Grid item xs={4}>
-                <SupervisorAccount fontSize="small" />
-              </Grid>
-              <Grid item xs>
-                {supportCount}
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+          </CardContent>
+        </Card>
+      </Link>
+    </Fragment>
   );
 }
 
@@ -97,6 +102,7 @@ PetitionCard.defaultProps = {
 PetitionCard.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   classes: PropTypes.object,
+  id: PropTypes.number.isRequired,
   title: PropTypes.string,
   createdAt: PropTypes.string,
   supportCount: PropTypes.number,

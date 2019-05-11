@@ -11,6 +11,7 @@ import { withStyles } from '@material-ui/core/styles';
 import 'medium-draft/lib/index.css';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { stateToHTML } from 'draft-js-export-html';
 
 const styles = theme => ({
   newPage: {
@@ -71,7 +72,7 @@ class New extends Component {
       const params = {
         author_id: authorID,
         title,
-        content: JSON.stringify(editorState),
+        content: stateToHTML(editorState.getCurrentContent()),
       };
 
       axios.defaults.headers = {

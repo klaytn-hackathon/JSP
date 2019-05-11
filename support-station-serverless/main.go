@@ -17,8 +17,11 @@ var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
 func router(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	switch req.HTTPMethod {
 	case "GET":
-		// authorID := req.QueryStringParameters["author_id"]
-		return index(req)
+		if req.PathParameters["petitionID"] == "" {
+			return index(req)
+		} else {
+			return show(req)
+		}
 	case "POST":
 		return create(req)
 	default:
@@ -55,28 +58,28 @@ func index(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, e
 	}, nil
 }
 
-// func show(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-// 	authorID := req.QueryStringParameters["author_id"]
+func show(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	ID := req.PathParameters["petitionID"]
 
-// 	pt, err := getItem(authorID)
-// 	if err != nil {
-// 		return serverError(err)
-// 	}
-// 	if pt == nil {
-// 		return clientError(http.StatusNotFound)
-// 	}
+	pt, err := db.GetItem(ID)
+	if err != nil {
+		return serverError(err)
+	}
+	if pt == nil {
+		return clientError(http.StatusNotFound)
+	}
 
-// 	js, err := json.Marshal(pt)
-// 	if err != nil {
-// 		return serverError(err)
-// 	}
+	js, err := json.Marshal(pt)
+	if err != nil {
+		return serverError(err)
+	}
 
-// 	return events.APIGatewayProxyResponse{
-// 		StatusCode: http.StatusOK,
-// 		Headers:    headers(),
-// 		Body:       string(js),
-// 	}, nil
-// }
+	return events.APIGatewayProxyResponse{
+		StatusCode: http.StatusOK,
+		Headers:    headers(),
+		Body:       string(js),
+	}, nil
+}
 
 func create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	pt := new(models.Petition)

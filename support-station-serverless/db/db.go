@@ -1,19 +1,21 @@
 package db
 
 import (
-	"fmt"
 	"petitions/models"
 	"time"
-
+	"log"
+	"os"
 	"github.com/jinzhu/gorm"
 )
+
+var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
 
 func GetItems(queryString *map[string]string) ([]models.Petition, error) {
 	db, err := getConnection()
 	defer db.Close()
 
 	if err != nil {
-		fmt.Printf(err.Error())
+		errorLogger.Println(err.Error())
 		return nil, err
 	}
 
@@ -32,8 +34,6 @@ func GetItems(queryString *map[string]string) ([]models.Petition, error) {
 		db.Limit((*queryString)["limit"]).Find(&petitions)
 	}
 
-
-
 	return petitions, nil
 }
 
@@ -42,7 +42,7 @@ func GetTotalCount() (uint, error) {
 	defer db.Close()
 
 	if err != nil {
-		fmt.Printf(err.Error())
+		errorLogger.Println(err.Error())
 		return 0, err
 	}
 
@@ -52,18 +52,28 @@ func GetTotalCount() (uint, error) {
 	return count, nil
 }
 
-// func getItem(authorID string) (*models.Petition, error) {
-// 	dbConnector := DBConnector{}
-// 	db, err := dbConnector.GetConnection()
-// 	defer db.Close()
-// }
+func GetItem(ID string) (*models.Petition, error) {
+	dbConnector := DBConnector{}
+	db, err := dbConnector.GetConnection()
+	defer db.Close()
+
+	if err != nil {
+		errorLogger.Println(err.Error())
+		return nil, err
+	}
+
+	petition := models.Petition{}
+	db.First(&petition, ID)
+
+	return &petition, nil
+}
 
 func PutItem(petition *models.Petition) error {
 	db, err := getConnection()
 	defer db.Close()
 
 	if err != nil {
-		fmt.Printf(err.Error())
+		errorLogger.Println(err.Error())
 		return err
 	}
 

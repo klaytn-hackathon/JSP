@@ -13,9 +13,6 @@ const styles = () => ({
     marginTop: '56px',
     marginBottom: '40px',
   },
-  linkButton: {
-    textDecoration: 'none',
-  },
   writeButtonContainer: {
     textAlign: 'right',
   },
@@ -25,6 +22,7 @@ const styles = () => ({
   },
   writeButtonText: {
     color: 'white',
+    textDecoration: 'none',
   },
   pagination: {
     display: 'inline-block',
@@ -87,7 +85,7 @@ class MainContent extends Component {
     // eslint-disable-next-line no-undef
     const writeButton = sessionStorage.getItem('support_station_id')
       ? (
-        <Link className={classes.linkButton} to="/new">
+        <Link style={{ textDecoration: 'none' }} to="/petitions/new">
           <Button variant="contained" className={classes.writeButton}>
             <div className={classes.writeButtonText}>Write a petition</div>
           </Button>
@@ -110,8 +108,9 @@ class MainContent extends Component {
         <Grid container spacing={16} direction="row">
           {
             petitions.map(petition => (
-              <Grid item xs={4} key={Math.random()}>
+              <Grid item xs={4} key={petition.id}>
                 <PetitionCard
+                  id={petition.id}
                   title={petition.title}
                   createdAt={petition.created_at}
                   supportCount={petition.support_count}
