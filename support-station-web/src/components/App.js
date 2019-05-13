@@ -1,6 +1,6 @@
 import React from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
@@ -27,8 +27,10 @@ function App() {
     <Provider store={store}>
       <MuiThemeProvider theme={theme}>
         <Route exact path="/" component={Home} />
-        <Route exact path="/petitions/new" component={NewContainer} />
-        <Route exact path="/petitions/:id" component={Show} />
+        <Switch>
+          <Route path="/petitions/new" component={NewContainer} />
+          <Route path="/petitions/:id" component={Show} />
+        </Switch>
       </MuiThemeProvider>
     </Provider>
   );

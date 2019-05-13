@@ -94,7 +94,7 @@ class Show extends Component {
     const { petition } = this.state;
 
     const petitionCreatedAt = moment(petition.created_at).format('YYYY-MM-DD');
-    const petitionEndAt = moment(petition.created_at).add(1, 'month').format('YYYY-MM-DD');
+    const petitionEndAt = moment(petition.end_date).format('YYYY-MM-DD');
     const content = (petition.content && parser(petition.content)) || '';
 
     return (

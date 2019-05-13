@@ -27,9 +27,9 @@ contract PetitionContract {
     owner = msg.sender;
   }
 
-  function register(uint petition_id, string memory _author_id, string _content, uint _signaturesCount, uint _signaturesLimitCount) payable public {
-    petitionTable[petition_id] = Petition({author_id: _author_id, content: _content, signaturesCount: _signaturesCount, signaturesLimitCount: _signaturesLimitCount});
-    
+  function register(uint petition_id, string memory _author_id, string _content, uint _signaturesLimitCount) payable public {
+    petitionTable[petition_id] = Petition({author_id: _author_id, content: _content, signaturesCount: 0, signaturesLimitCount: _signaturesLimitCount});
+
     owner.transfer(msg.value);
 
     bytes32 author_id_bytes = keccak256(abi.encode(_author_id));
@@ -38,10 +38,19 @@ contract PetitionContract {
 
   function sign(uint _petition_id, string _signer_id, string memory signature) public {
     bytes32 key = keccak256(abi.encode(signature));
-    // require(!signerTable[key].signed);
-    
+
+    require(!signerTable[key].signed);
+    require(petitionTable[_petition_id].signaturesCount + 1 < petitionTable[_petition_id].signaturesLimitCount);
+
     signerTable[key] = Signer({petition_id: _petition_id, signer_id: _signer_id, signed: true, signed_at: now});
-    
+
     emit Signed(key, now);
+  }
+
+  function getSignaturesCount(uint petition_id) public view returns(uint) {
+    bytes memory author_id = bytes(petitionTable[petition_id].author_id);
+    require(author_id.length != 0);
+    
+    return petitionTable[petition_id].signaturesCount;
   }
 }
