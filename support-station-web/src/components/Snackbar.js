@@ -8,6 +8,9 @@ import IconButton from '@material-ui/core/IconButton';
 import { SnackbarContent, Snackbar } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
+import { connect } from 'react-redux';
+import * as postAction from '../redux/actions/post';
+
 const variantIcon = {
   success: CheckCircleIcon,
   error: ErrorIcon,
@@ -27,21 +30,17 @@ const styles = theme => ({
     opacity: 0.9,
     marginRight: theme.spacing.unit,
   },
-  message: {
-    display: 'flex',
-    alignItems: 'center',
-  },
 });
 
 function MySnackbarContent(props) {
   const {
-    classes, className, message, variant, ...other
+    classes, message, variant, ...other
   } = props;
   const Icon = variantIcon[variant];
 
   return (
     <SnackbarContent
-      className={classNames(classes[variant], className)}
+      className={classNames(classes[variant])}
       aria-describedby="client-snackbar"
       message={(
         <span id="client-snackbar" className={classes.message}>
@@ -67,7 +66,6 @@ function MySnackbarContent(props) {
 MySnackbarContent.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   classes: PropTypes.object.isRequired,
-  className: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,
   variant: PropTypes.oneOf(['success', 'error']).isRequired,
 };
@@ -79,11 +77,11 @@ class CustomizedSnackbar extends React.Component {
     open: true,
   }
 
-  handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+  handleClose = () => {
+    // eslint-disable-next-line react/prop-types
+    const { postStateReset } = this.props;
 
+    postStateReset();
     this.setState({ open: false });
   };
 
@@ -112,7 +110,7 @@ class CustomizedSnackbar extends React.Component {
           horizontal: 'left',
         }}
         open={open}
-        autoHideDuration={4000}
+        autoHideDuration={2000}
         onClose={this.handleClose}
       >
         { content }
@@ -121,4 +119,8 @@ class CustomizedSnackbar extends React.Component {
   }
 }
 
-export default CustomizedSnackbar;
+const mapDispatchToProps = dispatch => ({
+  postStateReset: () => dispatch(postAction.initializePostState()),
+});
+
+export default connect(null, mapDispatchToProps)(CustomizedSnackbar);

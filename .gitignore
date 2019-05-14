@@ -5,3 +5,5 @@ support-station-contract/deployedABI
 support-station-contract/deployedAddress
 support-station-contract/build
 support-station-contract/truffle-config.js
+support-station-web/deployedAddress
+support-station-web/deployedABI

@@ -85,17 +85,24 @@ func create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 	pt := new(models.Petition)
 	err := json.Unmarshal([]byte(req.Body), pt)
 	if err != nil {
+		errorLogger.Fatalln(err)
 		return clientError(http.StatusUnprocessableEntity)
 	}
 
-	dbErr := db.PutItem(pt)
+	petition, dbErr := db.PutItem(pt)
 	if dbErr != nil {
 		return serverError(dbErr)
+	}
+
+	petitionJson, err := json.Marshal(petition)
+	if err != nil {
+		return serverError(err)
 	}
 	
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
 		Headers:    headers(),
+		Body: string(petitionJson),
 	}, nil
 }
 

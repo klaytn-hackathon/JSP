@@ -3,6 +3,7 @@ pragma solidity >=0.4.22 < 0.6.0;
 contract PetitionContract {
   struct Petition {
     string author_id;
+    string title;
     string content;
     uint signaturesCount;
     uint signaturesLimitCount;
@@ -27,8 +28,14 @@ contract PetitionContract {
     owner = msg.sender;
   }
 
-  function register(uint petition_id, string memory _author_id, string _content, uint _signaturesLimitCount) payable public {
-    petitionTable[petition_id] = Petition({author_id: _author_id, content: _content, signaturesCount: 0, signaturesLimitCount: _signaturesLimitCount});
+  function getBalance() private view returns (uint) {
+    return address(this).balance;
+  }
+
+  function register(uint petition_id, string memory _author_id, string _title, string _content, uint _signaturesLimitCount) public payable {
+    require(msg.sender.balance > msg.value);
+
+    petitionTable[petition_id] = Petition({author_id: _author_id, title: _title, content: _content, signaturesCount: 0, signaturesLimitCount: _signaturesLimitCount});
 
     owner.transfer(msg.value);
 
@@ -52,5 +59,11 @@ contract PetitionContract {
     require(author_id.length != 0);
     
     return petitionTable[petition_id].signaturesCount;
+  }
+
+  function withdrawal() public {
+    require(msg.sender == owner);
+
+    msg.sender.transfer(getBalance());
   }
 }

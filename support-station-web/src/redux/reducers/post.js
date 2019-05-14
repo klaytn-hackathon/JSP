@@ -1,4 +1,4 @@
-import * as types from '../actions';
+import { POST_SUCCESS, POST_FAILED } from '../actions/actionTypes';
 
 const initialState = {
   created: 'INITIAL',
@@ -7,18 +7,21 @@ const initialState = {
 
 function onPetitionCreated(state = initialState, action) {
   switch (action.type) {
-  case types.POST_SUCCESS:
+  case POST_SUCCESS:
     return {
       ...state,
       created: 'SUCCESS',
     };
-  case types.POST_FAILED:
+  case POST_FAILED:
     return {
       created: 'FAILED',
       error: action.error,
     };
   default:
-    return state;
+    return {
+      ...state,
+      created: 'INITIAL',
+    };
   }
 }
 

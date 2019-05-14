@@ -2,15 +2,10 @@ import React from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { Route, Switch } from 'react-router-dom';
 
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import NewContainer from '../containers/NewContainer';
 import { Home, Show } from '../pages';
-import reducers from '../reducers';
-
-const store = createStore(
-  reducers,
-);
+import store from '../redux/store';
 
 const theme = createMuiTheme({
   palette: {

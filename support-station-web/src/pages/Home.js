@@ -39,7 +39,7 @@ Home.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  petitionPostState: state.created,
+  petitionPostState: state.post.created,
 });
 
 export default connect(mapStateToProps)(Home);

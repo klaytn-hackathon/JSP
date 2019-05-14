@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {
   Editor,
   createEditorState,
 } from 'medium-draft';
 import {
-  Grid, TextField, Typography, Button,
+  Grid, TextField, Typography, Button, CircularProgress,
 } from '@material-ui/core';
 import { Link, Redirect } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
@@ -14,7 +14,8 @@ import PropTypes from 'prop-types';
 import { stateToHTML } from 'draft-js-export-html';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
-
+import Contract from '../klaytn/petition_contract';
+import AuthPage from './AuthPage';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const styles = theme => ({
@@ -53,6 +54,13 @@ const styles = theme => ({
   petitionEndDatePicker: {
     fontFamily: 'Spoqa Han Sans, Spoqa Han Sans JP, Sans-serif',
   },
+  buttonProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
 });
 
 class New extends Component {
@@ -64,7 +72,21 @@ class New extends Component {
       redirect: false,
       signaturesLimitCount: 0,
       endDate: new Date(moment().format('YYYY-MM-DD')),
+      loading: false,
     };
+
+    // eslint-disable-next-line no-undef
+    const walletFromSession = sessionStorage.getItem('walletInstance');
+    // eslint-disable-next-line react/prop-types
+    const { integrateWallet, removeWallet } = this.props;
+
+    if (walletFromSession) {
+      try {
+        integrateWallet(JSON.parse(walletFromSession).privateKey);
+      } catch (e) {
+        removeWallet();
+      }
+    }
 
     this.onChange = (editorState) => {
       this.setState({
@@ -90,6 +112,25 @@ class New extends Component {
       });
     };
 
+    this.onSubmitClicked = () => {
+      const { loading } = this.state;
+
+      if (!loading) {
+        this.setState(
+          {
+            loading: true,
+          },
+          () => {
+            this.timer = setTimeout(() => {
+              this.setState({
+                loading: false,
+              });
+            }, 2000);
+          },
+        );
+      }
+    };
+
     this.onSubmit = (event) => {
       event.preventDefault();
 
@@ -99,29 +140,56 @@ class New extends Component {
       const { onSuccess, onFailed } = this.props;
 
       // eslint-disable-next-line no-undef
+      const wallet = JSON.parse(walletFromSession);
+      // eslint-disable-next-line no-undef
       const authorID = sessionStorage.getItem('support_station_id');
+      const supportLimitCount = parseInt(signaturesLimitCount, 10);
       const params = {
         author_id: authorID,
         title,
         content: stateToHTML(editorState.getCurrentContent()),
-        support_limit_count: parseInt(signaturesLimitCount, 10),
+        support_limit_count: supportLimitCount,
         end_date: endDate,
       };
 
       axios.defaults.headers = {
         'Content-Type': 'application/json; charset=utf-8',
       };
+
       axios.post(process.env.SERVER_ADDRESS, params)
         .then((res) => {
           if (res.status === 201 || res.status === 200) {
-            onSuccess();
-            this.setState({ redirect: true });
+            Contract.methods.register(
+              res.data.id,
+              res.data.author_id,
+              res.data.title,
+              res.data.content,
+              res.data.support_limit_count,
+            ).send({
+              from: wallet.address,
+              gas: '20000000',
+              value: supportLimitCount * 20000000,
+            }).on('receipt', () => {
+              onSuccess();
+
+              this.setState({
+                redirect: true,
+                loading: false,
+              });
+            }).on('error', (error) => {
+              console.log('error', error);
+            });
           } else {
             onFailed();
             this.setState({ redirect: true });
           }
         })
         .catch((err) => {
+          console.log('err', err);
+
+          this.setState({
+            loading: false,
+          });
           onFailed(err);
         });
     };
@@ -131,9 +199,9 @@ class New extends Component {
 
   render() {
     // eslint-disable-next-line react/prop-types
-    const { classes } = this.props;
+    const { classes, isLoggedIn } = this.props;
     const {
-      editorState, title, redirect, signaturesLimitCount, endDate,
+      editorState, title, redirect, signaturesLimitCount, endDate, loading,
     } = this.state;
 
     if (redirect) {
@@ -141,72 +209,88 @@ class New extends Component {
     }
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <Grid className={classes.newPage} container spacing={40} direction="column">
-          <Grid item>
-            <Typography className={classes.title}>
+      <Fragment>
+        {!isLoggedIn ? <AuthPage />
+          : (
+            <form onSubmit={this.onSubmit}>
+              <Grid className={classes.newPage} container spacing={40} direction="column">
+                <Grid item>
+                  <Typography className={classes.title}>
               Petition Title
-            </Typography>
-            <TextField
-              id="standard-full-width"
-              className={classes.textField}
-              fullWidth
-              margin="normal"
-              variant="standard"
-              value={title}
-              onChange={this.onTitleTextChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography className={classes.content}>
+                  </Typography>
+                  <TextField
+                    id="standard-full-width"
+                    className={classes.textField}
+                    fullWidth
+                    margin="normal"
+                    variant="standard"
+                    value={title}
+                    onChange={this.onTitleTextChange}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography className={classes.content}>
               Content
-            </Typography>
-            <div className={classes.textField}>
-              <Editor
-                ref={this.refsEditor}
-                editorState={editorState}
-                onChange={this.onChange}
-                placeholder="Write your story"
-              />
-            </div>
-          </Grid>
-          <Grid item>
-            <TextField
-              id="standard-number"
-              label="Specify how many signatures you need for a petition"
-              value={signaturesLimitCount}
-              type="number"
-              className={classes.signaturesLimit}
-              onChange={this.onNumberFieldChange}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              margin="normal"
-            />
-          </Grid>
-          <Grid item className={classes.petitionEndDatePicker}>
-            <Grid container direction="column">
-              <div>Petition End Date</div>
-              <DatePicker
-                selected={endDate}
-                onChange={this.onDateChange}
-              />
-            </Grid>
-          </Grid>
-          <Grid item className={classes.buttonGroup}>
-            <Button
-              type="submit"
-            >
-              Post
-            </Button>
-            <Link className={classes.link} to="/">
-              <Button>
-                Cancel
-              </Button>
-            </Link>
-          </Grid>
-        </Grid>
-      </form>
+                  </Typography>
+                  <div className={classes.textField}>
+                    <Editor
+                      ref={this.refsEditor}
+                      editorState={editorState}
+                      onChange={this.onChange}
+                      placeholder="Write your story"
+                    />
+                  </div>
+                </Grid>
+                <Grid item>
+                  <TextField
+                    id="standard-number"
+                    label="Specify how many signatures you need for a petition"
+                    value={signaturesLimitCount}
+                    type="number"
+                    className={classes.signaturesLimit}
+                    onChange={this.onNumberFieldChange}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item className={classes.petitionEndDatePicker}>
+                  <Grid container direction="column">
+                    <div>Petition End Date</div>
+                    <DatePicker
+                      selected={endDate}
+                      onChange={this.onDateChange}
+                    />
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  {!isLoggedIn && <AuthPage />}
+                </Grid>
+                <Grid item className={classes.buttonGroup}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    onClick={this.onSubmitClicked}
+                  >
+                    Post
+                  </Button>
+                  {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                  <Link className={classes.link} to="/">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                    >
+                      Cancel
+                    </Button>
+                  </Link>
+                </Grid>
+              </Grid>
+            </form>
+          )
+        }
+      </Fragment>
     );
   }
 }

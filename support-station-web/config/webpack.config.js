@@ -606,7 +606,13 @@ module.exports = function(webpackEnv) {
           // The formatter is invoked directly in WebpackDevServerUtils during development
           formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
-      new webpack.DefinePlugin({ ...definitions }),
+      new webpack.DefinePlugin(
+        {
+          DEPLOYED_ADDRESS: JSON.stringify(fs.readFileSync('deployedAddress', 'utf8').replace(/\n|\r/g, '')),
+          DEPLOYED_ABI: fs.existsSync('deployedABI') && fs.readFileSync('deployedABI', 'utf8'),
+          ...definitions,
+        },
+      ),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.

@@ -68,13 +68,13 @@ func GetItem(ID string) (*models.Petition, error) {
 	return &petition, nil
 }
 
-func PutItem(petition *models.Petition) error {
+func PutItem(petition *models.Petition) (*models.Petition, error) {
 	db, err := getConnection()
 	defer db.Close()
 
 	if err != nil {
 		errorLogger.Println(err.Error())
-		return err
+		return nil, err
 	}
 
 	db.AutoMigrate(&models.Petition{})
@@ -84,7 +84,7 @@ func PutItem(petition *models.Petition) error {
 
 	db.Create(petition)
 
-	return nil
+	return petition, nil
 }
 
 func getConnection() (db *gorm.DB, err error) {
