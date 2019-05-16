@@ -14,7 +14,6 @@ type Petition struct {
 	Content           string    `json:"content"`
 	CreatedAt         time.Time `json:"created_at"`
 	UpdatedAt         time.Time `json:"-"`
-	SupportCount      uint      `json:"support_count"`
 	SupportLimitCount uint      `json:"support_limit_count"`
 	EndDate           time.Time `json:"end_date"`
 }

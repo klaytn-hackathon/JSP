@@ -68,6 +68,7 @@ class Show extends Component {
 
     this.state = {
       petition: {},
+      supportCount: 0,
     };
   }
 
@@ -78,7 +79,7 @@ class Show extends Component {
   getPetition() {
     const { match } = this.props;
 
-    axios.get(`https://5wpzfbe239.execute-api.ap-northeast-2.amazonaws.com/staging/petitions/${match.params.id}`).then((response) => {
+    axios.get(`${process.env.PETITION_ADDRESS}/${match.params.id}`).then((response) => {
       if (response.status === 200) {
         this.setState({
           petition: response.data,
@@ -87,12 +88,28 @@ class Show extends Component {
         console.log('Failed to fetch a petition.');
       }
     });
+
+    axios.get(`${process.env.SUPPORT_ADDRESS}?petition_id=${match.params.id}`).then((response) => {
+      if (response.status === 200) {
+        this.setState({
+          supportCount: response.data.supports.length,
+        });
+      } else {
+        console.log('Failed to fetch a petition.');
+      }
+    });
+  }
+
+  supportCompleted = (currentSupportCount) => {
+    this.setState({
+      supportCount: currentSupportCount,
+    });
   }
 
   render() {
     // eslint-disable-next-line react/prop-types
     const { classes, match } = this.props;
-    const { petition } = this.state;
+    const { petition, supportCount } = this.state;
 
     const petitionCreatedAt = moment(petition.created_at).format('YYYY-MM-DD');
     const petitionEndAt = moment(petition.end_date).format('YYYY-MM-DD');
@@ -121,7 +138,7 @@ class Show extends Component {
         >
           <div className={classes.supportCountText}>
             Signatures count: [
-            <span className={classes.count}>{petition.support_count}</span>
+            <span className={classes.count}>{supportCount}</span>
             ]
           </div>
         </Grid>
@@ -166,6 +183,7 @@ class Show extends Component {
           <Grid item>
             <SupportButton
               petitionID={match.params.id}
+              onSupportCompleted={this.supportCompleted}
             />
           </Grid>
         </Grid>

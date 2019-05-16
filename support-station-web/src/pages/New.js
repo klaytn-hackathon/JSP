@@ -155,7 +155,7 @@ class New extends Component {
         'Content-Type': 'application/json; charset=utf-8',
       };
 
-      axios.post(`${process.env.PETITION_ADDRESS}/petitions`, params)
+      axios.post(`${process.env.PETITION_ADDRESS}`, params)
         .then((res) => {
           if (res.status === 201) {
             Contract.methods.register(
