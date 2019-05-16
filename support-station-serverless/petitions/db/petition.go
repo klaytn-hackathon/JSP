@@ -5,13 +5,12 @@ import (
 	"time"
 	"log"
 	"os"
-	"github.com/jinzhu/gorm"
 )
 
 var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
 
 func GetItems(queryString *map[string]string) ([]models.Petition, error) {
-	db, err := getConnection()
+	db, err := GetConnection()
 	defer db.Close()
 
 	if err != nil {
@@ -38,7 +37,7 @@ func GetItems(queryString *map[string]string) ([]models.Petition, error) {
 }
 
 func GetTotalCount() (uint, error) {
-	db, err := getConnection()
+	db, err := GetConnection()
 	defer db.Close()
 
 	if err != nil {
@@ -53,8 +52,7 @@ func GetTotalCount() (uint, error) {
 }
 
 func GetItem(ID string) (*models.Petition, error) {
-	dbConnector := DBConnector{}
-	db, err := dbConnector.GetConnection()
+	db, err := GetConnection()
 	defer db.Close()
 
 	if err != nil {
@@ -69,7 +67,7 @@ func GetItem(ID string) (*models.Petition, error) {
 }
 
 func PutItem(petition *models.Petition) (*models.Petition, error) {
-	db, err := getConnection()
+	db, err := GetConnection()
 	defer db.Close()
 
 	if err != nil {
@@ -85,11 +83,4 @@ func PutItem(petition *models.Petition) (*models.Petition, error) {
 	db.Create(petition)
 
 	return petition, nil
-}
-
-func getConnection() (db *gorm.DB, err error) {
-	dbConnector := DBConnector{}
-	db2, err := dbConnector.GetConnection()
-
-	return db2, err
 }

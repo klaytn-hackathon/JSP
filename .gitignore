@@ -1,5 +1,3 @@
-support-station-serverless/.DS_Store
-
 support-station-contract/node_modules
 support-station-contract/deployedABI
 support-station-contract/deployedAddress
@@ -7,3 +5,4 @@ support-station-contract/build
 support-station-contract/truffle-config.js
 support-station-web/deployedAddress
 support-station-web/deployedABI
+.DS_Store

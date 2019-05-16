@@ -1,11 +1,13 @@
 package models
 
 import (
-	"reflect"
 	"time"
 )
 
+// Petition Model
 type Petition struct {
+	model
+
 	ID                uint      `json:"id"`
 	AuthorID          string    `json:"author_id"`
 	Title             string    `json:"title"`
@@ -15,16 +17,4 @@ type Petition struct {
 	SupportCount      uint      `json:"support_count"`
 	SupportLimitCount uint      `json:"support_limit_count"`
 	EndDate           time.Time `json:"end_date"`
-}
-
-func (p *Petition) Values() []string {
-	val := reflect.ValueOf(p).Elem()
-
-	petitionValues := []string{}
-	for i := 0; i < val.NumField(); i++ {
-		valueField := val.Field(i)
-		petitionValues = append(petitionValues, valueField.Interface().(string))
-	}
-
-	return petitionValues
 }

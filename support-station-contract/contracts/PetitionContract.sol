@@ -46,8 +46,8 @@ contract PetitionContract {
   function sign(uint _petition_id, string _signer_id, string memory signature) public {
     bytes32 key = keccak256(abi.encode(signature));
 
-    require(!signerTable[key].signed);
-    require(petitionTable[_petition_id].signaturesCount + 1 < petitionTable[_petition_id].signaturesLimitCount);
+    require(!signerTable[key].signed, 'Already signed');
+    require(petitionTable[_petition_id].signaturesCount + 1 < petitionTable[_petition_id].signaturesLimitCount, 'Limit exceeded');
 
     signerTable[key] = Signer({petition_id: _petition_id, signer_id: _signer_id, signed: true, signed_at: now});
 

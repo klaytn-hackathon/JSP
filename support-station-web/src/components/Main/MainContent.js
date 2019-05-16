@@ -82,16 +82,6 @@ class MainContent extends Component {
     const { classes } = this.props;
     const { petitions, pageCount } = this.state;
 
-    // eslint-disable-next-line no-undef
-    const writeButton = sessionStorage.getItem('support_station_id')
-      ? (
-        <Link style={{ textDecoration: 'none' }} to="/petitions/new">
-          <Button variant="contained" className={classes.writeButton}>
-            <div className={classes.writeButtonText}>Write a petition</div>
-          </Button>
-        </Link>
-      ) : ('');
-
     return (
       <Fragment>
         <Typography gutterBottom variant="h5" component="h2" className={classes.mainContentText}>
@@ -100,7 +90,11 @@ class MainContent extends Component {
               All Petitions
             </Grid>
             <Grid item xs className={classes.writeButtonContainer}>
-              {writeButton}
+              <Link style={{ textDecoration: 'none' }} to="/petitions/new">
+                <Button variant="contained" className={classes.writeButton}>
+                  <div className={classes.writeButtonText}>Write a petition</div>
+                </Button>
+              </Link>
             </Grid>
           </Grid>
         </Typography>

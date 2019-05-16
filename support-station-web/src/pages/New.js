@@ -77,12 +77,14 @@ class New extends Component {
 
     // eslint-disable-next-line no-undef
     const walletFromSession = sessionStorage.getItem('walletInstance');
+    this.wallet = JSON.parse(walletFromSession);
+
     // eslint-disable-next-line react/prop-types
     const { integrateWallet, removeWallet } = this.props;
 
     if (walletFromSession) {
       try {
-        integrateWallet(JSON.parse(walletFromSession).privateKey);
+        integrateWallet(this.wallet.privateKey);
       } catch (e) {
         removeWallet();
       }
@@ -139,13 +141,10 @@ class New extends Component {
       } = this.state;
       const { onSuccess, onFailed } = this.props;
 
-      // eslint-disable-next-line no-undef
-      const wallet = JSON.parse(walletFromSession);
-      // eslint-disable-next-line no-undef
-      const authorID = sessionStorage.getItem('support_station_id');
       const supportLimitCount = parseInt(signaturesLimitCount, 10);
+
       const params = {
-        author_id: authorID,
+        author_id: this.wallet.address,
         title,
         content: stateToHTML(editorState.getCurrentContent()),
         support_limit_count: supportLimitCount,
@@ -156,17 +155,17 @@ class New extends Component {
         'Content-Type': 'application/json; charset=utf-8',
       };
 
-      axios.post(process.env.SERVER_ADDRESS, params)
+      axios.post(`${process.env.PETITION_ADDRESS}/petitions`, params)
         .then((res) => {
-          if (res.status === 201 || res.status === 200) {
+          if (res.status === 201) {
             Contract.methods.register(
               res.data.id,
-              res.data.author_id,
+              this.wallet.address,
               res.data.title,
               res.data.content,
               res.data.support_limit_count,
             ).send({
-              from: wallet.address,
+              from: this.wallet.address,
               gas: '20000000',
               value: supportLimitCount * 20000000,
             }).on('receipt', () => {

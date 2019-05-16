@@ -4,6 +4,7 @@ import { Grid, withStyles } from '@material-ui/core';
 import axios from 'axios';
 import moment from 'moment';
 import parser from 'html-react-parser';
+import SupportButton from '../components/SupportButton';
 
 const styles = theme => ({
   petitionContainer: {
@@ -90,7 +91,7 @@ class Show extends Component {
 
   render() {
     // eslint-disable-next-line react/prop-types
-    const { classes } = this.props;
+    const { classes, match } = this.props;
     const { petition } = this.state;
 
     const petitionCreatedAt = moment(petition.created_at).format('YYYY-MM-DD');
@@ -161,6 +162,11 @@ class Show extends Component {
           </Grid>
           <Grid item className={classes.petitionContent}>
             {content}
+          </Grid>
+          <Grid item>
+            <SupportButton
+              petitionID={match.params.id}
+            />
           </Grid>
         </Grid>
       </Grid>
