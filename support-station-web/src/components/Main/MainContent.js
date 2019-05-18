@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Grid, Typography, Button } from '@material-ui/core';
+import {
+  Grid, Typography, Button, CircularProgress,
+} from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 import axios from 'axios';
@@ -101,6 +103,7 @@ class MainContent extends Component {
         </Typography>
 
         <Grid container spacing={16} direction="row">
+          {petitions.length === 0 ? <CircularProgress /> : ''}
           {
             petitions.map(petition => (
               <Grid item xs={4} key={petition.id}>

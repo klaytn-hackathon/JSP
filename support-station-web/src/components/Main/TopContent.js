@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography, CircularProgress } from '@material-ui/core';
 import queryString from 'query-string';
 import axios from 'axios';
 import PetitionCard from './PetitionCard';
@@ -53,6 +53,7 @@ class TopContent extends Component {
         Top 3 Petitions
         </Typography>
         <Grid container spacing={16} direction="row">
+          {petitions.length === 0 ? <CircularProgress /> : ''}
           {
             petitions.map(petition => (
               <Grid item xs={4} key={petition.id}>
