@@ -6,3 +6,5 @@ support-station-contract/truffle-config.js
 support-station-web/deployedAddress
 support-station-web/deployedABI
 .DS_Store
+support-station-verfication/yarn-error.log
+support-station-verfication/bin/www
