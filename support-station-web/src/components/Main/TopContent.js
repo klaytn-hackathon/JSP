@@ -26,11 +26,12 @@ class TopContent extends Component {
     const query = {
       limit: 3,
       order: 'support_count',
+      with_support_count: true,
     };
 
     const stringified = queryString.stringify(query);
     const getPetition = () => {
-      axios.get(`https://5wpzfbe239.execute-api.ap-northeast-2.amazonaws.com/staging/petitions?${stringified}`).then((response) => {
+      axios.get(`${process.env.PETITION_ADDRESS}?${stringified}`).then((response) => {
         if (response.status === 200) {
           this.setState(() => ({
             petitions: response.data.petitions,

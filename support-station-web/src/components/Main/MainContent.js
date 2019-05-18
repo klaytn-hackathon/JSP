@@ -55,9 +55,10 @@ class MainContent extends Component {
       order: 'created_at',
       offset,
       limit: perPage,
+      with_support_count: true,
     };
 
-    axios.get(`https://5wpzfbe239.execute-api.ap-northeast-2.amazonaws.com/staging/petitions?${queryString.stringify(query)}`).then((response) => {
+    axios.get(`${process.env.PETITION_ADDRESS}?${queryString.stringify(query)}`).then((response) => {
       if (response.status === 200) {
         this.setState(() => ({
           petitions: response.data.petitions,

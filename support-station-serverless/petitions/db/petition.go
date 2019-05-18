@@ -1,10 +1,10 @@
 package db
 
 import (
-	"petitions/models"
-	"time"
 	"log"
 	"os"
+	"petitions/models"
+	"time"
 )
 
 var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
@@ -26,12 +26,18 @@ func GetItems(queryString *map[string]string) ([]models.Petition, error) {
 		db = db.Offset((*queryString)["offset"])
 	}
 
-	petitions := []models.Petition{}
-	if (*queryString)["limit"] == "" {
-		db.Find(&petitions)
-	} else {
-		db.Limit((*queryString)["limit"]).Find(&petitions)
+	if (*queryString)["with_support_count"] == "true" {
+		db = db.
+			Select("petitions.id, petitions.author_id, petitions.title, petitions.content, petitions.created_at, petitions.support_limit_count, petitions.end_date, count(supports.id) as support_count").Joins("LEFT JOIN supports ON petitions.id = supports.petition_id").
+			Group("petitions.id")
 	}
+
+	if (*queryString)["limit"] != "" {
+		db = db.Limit((*queryString)["limit"])
+	}
+
+	petitions := []models.Petition{}
+	db.Find(&petitions)
 
 	return petitions, nil
 }

@@ -16,4 +16,6 @@ type Petition struct {
 	UpdatedAt         time.Time `json:"-"`
 	SupportLimitCount uint      `json:"support_limit_count"`
 	EndDate           time.Time `json:"end_date"`
+
+	SupportCount uint `json:"support_count,omitempty"`
 }
