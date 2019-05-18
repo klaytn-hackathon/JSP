@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import {
-  Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+  Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import axios from 'axios';
@@ -14,7 +14,16 @@ const styles = theme => ({
     padding: theme.spacing.unit * 2,
     marginTop: '15px',
   },
-  fabProgress: {
+  supportButtonWrapper: {
+    margin: theme.spacing.unit,
+    position: 'relative',
+  },
+  buttonProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -10,
+    marginLeft: -12,
   },
 });
 
@@ -143,7 +152,7 @@ class SupportButton extends Component {
     // eslint-disable-next-line no-undef
     const signInContent = sessionStorage.getItem('support_station_id')
       ? (
-        <div>
+        <div className={classes.supportButtonWrapper}>
           <Button
             variant="contained"
             color="primary"
@@ -153,6 +162,11 @@ class SupportButton extends Component {
           >
             {alreadySupported ? 'Already supported' : 'Support this petition'}
           </Button>
+          {
+            supportLoading
+            && !alreadySupported
+            && <CircularProgress size={24} className={classes.buttonProgress} />
+          }
         </div>
       )
       : (
@@ -184,8 +198,9 @@ class SupportButton extends Component {
           <DialogTitle id="alert-dialog-title">Results</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Let Google help apps determine location. This means sending anonymous location data to
-              Google, even when no apps are running.
+              Thank you for supporting this petition.
+              <br />
+              Your support has been recorded in klaytn blockchain platform.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
