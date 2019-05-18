@@ -8,3 +8,6 @@ support-station-web/deployedABI
 .DS_Store
 support-station-verfication/yarn-error.log
 support-station-verfication/bin/www
+support-station-verfication/.env
+support-station-verfication/deployedABI
+support-station-verfication/deployedAddress

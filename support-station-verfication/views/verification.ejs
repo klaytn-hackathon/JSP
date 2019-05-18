@@ -1,0 +1,21 @@
+<html>
+
+<head>
+  <title>About a petition</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+  <h1><%= petition.title %></h1>
+  <p class="support_count"><strong><em><%= petition.signaturesCount %></em> have signed</strong></p>
+  <p>
+  </p>
+  <p>
+    <%- petition.content %>
+  </p>
+  <p>
+    This petition was deplayed at <a href="<%= address %>">klaytn blockchain platform</a>
+  </p>
+</body>
+
+</html>
