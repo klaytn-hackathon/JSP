@@ -61,6 +61,9 @@ const styles = theme => ({
     marginTop: -12,
     marginLeft: -12,
   },
+  submitButton: {
+    marginRight: '10px',
+  },
 });
 
 class New extends Component {
@@ -272,6 +275,7 @@ class New extends Component {
                     color="primary"
                     type="submit"
                     onClick={this.onSubmitClicked}
+                    className={classes.submitButton}
                   >
                     Post
                   </Button>

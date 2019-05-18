@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import TopContent from './TopContent';
 import MainContent from './MainContent';
-import MainHeader from './MainHeader';
 
 const styles = theme => ({
   root: {
@@ -24,7 +23,6 @@ function Main(props) {
 
   return (
     <Grid container spacing={0} direction="column" className={classes.root}>
-      <MainHeader />
       <Grid container direction="column" className={classes.content}>
         <TopContent />
         <MainContent />
