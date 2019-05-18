@@ -20,8 +20,12 @@ func GetItems(queryString *map[string]string) ([]models.Support, error) {
 
 	db = db.Order("created_at desc")
 
-	if (*queryString)["petiton_id"] != "" {
-		db = db.Where("petition_id = ?", (*queryString)["petiton_id"])
+	if (*queryString)["petition_id"] != "" {
+		db = db.Where("petition_id = ?", (*queryString)["petition_id"])
+	}
+
+	if (*queryString)["signer_id"] != "" {
+		db = db.Where("signer_id = ?", (*queryString)["signer_id"])
 	}
 
 	supports := []models.Support{}
@@ -63,7 +67,8 @@ func PutItem(support *models.Support) (*models.Support, error) {
 	support.CreatedAt = time.Now()
 	support.UpdatedAt = time.Now()
 
-	db.Create(support)
+	temp := models.Support{}
+	db.FirstOrCreate(&temp, support)
 
 	return support, nil
 }

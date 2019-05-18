@@ -23,6 +23,7 @@ class SupportButton extends Component {
     open: false,
     supportDone: false,
     supportLoading: false,
+    alreadySupported: false,
   };
 
   handleLogin = () => {
@@ -49,7 +50,23 @@ class SupportButton extends Component {
     });
   }
 
-  onSupportButtonClicked = () => {
+  checkAlreadySigned = async (signerID) => {
+    const { petitionID } = this.props;
+
+    const res = await axios.get(`${process.env.SUPPORT_ADDRESS}?petition_id=${petitionID}&signer_id=${signerID}`);
+    if (res.status === 200) {
+      if (res.data.supports.length > 0) {
+        this.setState({
+          alreadySupported: true,
+        });
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  onSupportButtonClicked = async () => {
     const { supportLoading } = this.state;
     const { petitionID, onSupportCompleted } = this.props;
 
@@ -59,16 +76,16 @@ class SupportButton extends Component {
       });
     }
 
-    axios.defaults.headers = {
-      'Content-Type': 'application/json; charset=utf-8',
-    };
-
     // eslint-disable-next-line no-undef
     const signerID = sessionStorage.getItem('support_station_id');
     const params = {
       signer_id: signerID,
       petition_id: parseInt(petitionID, 10),
     };
+
+    if (await this.checkAlreadySigned(signerID)) {
+      return;
+    }
 
     const walletInstance = cav.klay.accounts.privateKeyToAccount(process.env.SECRET_KEY);
     cav.klay.accounts.wallet.add(walletInstance);
@@ -99,6 +116,9 @@ class SupportButton extends Component {
               });
 
             onSupportCompleted(count);
+            this.setState({
+              alreadySupported: true,
+            });
           }).on('error', (error) => {
             console.log('error', error);
           });
@@ -116,7 +136,9 @@ class SupportButton extends Component {
 
   render() {
     const { classes } = this.props;
-    const { open, supportDone, supportLoading } = this.state;
+    const {
+      open, supportDone, alreadySupported, supportLoading,
+    } = this.state;
 
     // eslint-disable-next-line no-undef
     const signInContent = sessionStorage.getItem('support_station_id')
@@ -129,7 +151,7 @@ class SupportButton extends Component {
             onClick={this.onSupportButtonClicked}
             disabled={supportLoading}
           >
-            Support this petition
+            {alreadySupported ? 'Already supported' : 'Support this petition'}
           </Button>
         </div>
       )
