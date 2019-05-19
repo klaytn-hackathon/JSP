@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, withStyles, LinearProgress } from '@material-ui/core';
+import {
+  Grid, withStyles, LinearProgress, Button,
+} from '@material-ui/core';
 import axios from 'axios';
 import moment from 'moment';
 import parser from 'html-react-parser';
@@ -78,6 +80,9 @@ const styles = theme => ({
     padding: '10px',
     textAlign: 'left',
   },
+  petitionVerificationButton: {
+    marginTop: '10px',
+  },
 });
 
 class Show extends Component {
@@ -122,6 +127,15 @@ class Show extends Component {
     this.setState({
       supportCount: currentSupportCount,
     });
+  }
+
+  onVerifyButtonClicked = () => {
+    const { petition } = this.state;
+
+    const path = `${process.env.VERIFICATION_SERVER}?petition_id=${petition.id}`;
+
+    // eslint-disable-next-line no-undef
+    window.open(path, '_blank');
   }
 
   render() {
@@ -203,11 +217,19 @@ class Show extends Component {
               <div className={classes.petitionAuthorNameText}>{petition.author_id}</div>
               started this petition.
             </Grid>
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'right' }}>
               <SupportButton
                 petitionID={match.params.id}
                 onSupportCompleted={this.supportCompleted}
               />
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.petitionVerificationButton}
+                onClick={this.onVerifyButtonClicked}
+              >
+                Verify this petition
+              </Button>
             </div>
           </Grid>
         </Grid>
