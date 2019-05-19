@@ -6,6 +6,9 @@ import AuthForm from '../components/AuthForm';
 const styles = theme => ({
   authPage: {
     padding: theme.spacing.unit * 20,
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing.unit * 2,
+    },
   },
   loginDescription: {
     color: '#777',

@@ -23,6 +23,10 @@ const styles = theme => ({
     minHeight: '1100px',
     padding: theme.spacing.unit * 20,
     background: 'white',
+    [theme.breakpoints.down('sm')]: {
+      height: 'auto',
+      padding: theme.spacing.unit * 2,
+    },
   },
   title: {
     fontSize: '1.5rem',
@@ -45,6 +49,9 @@ const styles = theme => ({
   },
   signaturesLimit: {
     width: '70%',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
   },
   dateField: {
     marginLeft: theme.spacing.unit,
@@ -223,6 +230,11 @@ class New extends Component {
           : (
             <form onSubmit={this.onSubmit}>
               <Grid className={classes.newPage} container spacing={40} direction="column">
+                <Grid item className={classes}>
+                  <h3>
+                    New Petition
+                  </h3>
+                </Grid>
                 <Grid item>
                   <Typography className={classes.title}>
               Petition Title
@@ -253,15 +265,11 @@ class New extends Component {
                 <Grid item>
                   <TextField
                     id="standard-number"
-                    label="Specify how many signatures you need for a petition"
+                    label="How many signatures you need for a petition"
                     value={signaturesLimitCount}
                     type="number"
                     className={classes.signaturesLimit}
                     onChange={this.onNumberFieldChange}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    margin="normal"
                   />
                 </Grid>
                 <Grid item className={classes.petitionEndDatePicker}>
