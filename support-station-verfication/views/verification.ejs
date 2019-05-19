@@ -7,7 +7,7 @@
 
 <body>
   <h1><%= petition.title %></h1>
-  <p class="support_count"><strong><em><%= petition.signaturesCount %></em> have signed</strong></p>
+  <p class="support_count"><strong><em><%= supports.length %></em> have signed</strong></p>
   <p>
   </p>
   <p>
@@ -16,6 +16,24 @@
   <p>
     This petition was deplayed at <a href="<%= address %>">klaytn blockchain platform</a>
   </p>
+
+
+  <div class="supports_table">
+    <div class="caption">Supports</div>
+    <div id="table">
+      <div class="header-row row">
+        <span class="cell">Signer</span>
+        <span class="cell">Signed At</span>
+      </div>
+      <% for(let i=0; i < supports.length; i++) { %>
+        <div class="row">
+          <input type="radio" name="expand">
+          <span class="cell"><a class="support_tx_link" href="https://baobab.klaytnscope.com/tx/<%= supports[i].transaction_id %>"><%= supports[i].signer_id %></a></span>
+          <span class="cell"><%= supports[i].created_at %></span>
+        </div>
+      <% } %>
+    </div>
+  </div>
 </body>
 
 </html>

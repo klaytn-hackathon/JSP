@@ -1,15 +1,27 @@
 const express = require('express');
+const moment = require('moment');
 const PetitionFetcher = require('../services/petition_fetcher');
-const Contract = require('../klaytn/petition_contract');
+const SupportFetcher = require('../services/support_fetcher');
 
 const router = express.Router();
 
+function formatDate(supports) {
+  supports.forEach((support) => {
+    // eslint-disable-next-line no-param-reassign
+    support.created_at = moment(support.created_at).format('YYYY-MM-DD h:mm:ss a');
+  });
+}
+
 router.get('/verification', async (req, res) => {
-  const fetcher = new PetitionFetcher();
-  const petition = await fetcher.fetch(req.query.petition_id);
+  const petition = await PetitionFetcher.fetch(req.query.petition_id);
+  const supports = await SupportFetcher.fetch(req.query.petition_id);
+
+  formatDate(supports);
+
   res.render('verification', {
     petition,
-    address: `https://baobab.klaytnscope.com/account/${Contract._address}`,
+    supports,
+    address: `https://baobab.klaytnscope.com/tx/${petition.transaction_id}`,
   });
 });
 
