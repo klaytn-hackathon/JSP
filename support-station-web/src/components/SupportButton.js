@@ -15,7 +15,6 @@ const styles = theme => ({
     marginTop: '15px',
   },
   supportButtonWrapper: {
-    margin: theme.spacing.unit,
     position: 'relative',
   },
   buttonProgress: {

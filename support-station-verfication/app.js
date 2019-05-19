@@ -8,6 +8,7 @@ require('dotenv').config();
 const indexRouter = require('./routes/index');
 
 const app = express();
+app.set('port', process.env.PORT || 48080);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -36,6 +37,9 @@ app.use((err, req, res) => {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+app.listen(app.get('port'), () => {
 });
 
 module.exports = app;

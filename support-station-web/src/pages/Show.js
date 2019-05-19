@@ -228,7 +228,7 @@ class Show extends Component {
                 className={classes.petitionVerificationButton}
                 onClick={this.onVerifyButtonClicked}
               >
-                Verify this petition
+                  Verify this petition
               </Button>
             </div>
           </Grid>
