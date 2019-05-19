@@ -112,19 +112,21 @@ class SupportButton extends Component {
             from: walletInstance.address,
             gas: '20000000',
             value: '1',
-          }).on('receipt', async () => {
+          }).on('receipt', async (receipt) => {
             this.setState({
               supportDone: true,
               supportLoading: false,
             });
+
+            axios.patch(`${process.env.SUPPORT_ADDRESS}`, { id: res.data.id, transaction_id: receipt.transactionHash });
 
             const count = await Contract.methods.getSignaturesCount(res.data.petition_id)
               .call({
                 from: walletInstance.address,
                 gas: '20000000',
               });
-
             onSupportCompleted(count);
+
             this.setState({
               alreadySupported: true,
             });
@@ -200,7 +202,7 @@ class SupportButton extends Component {
             <DialogContentText id="alert-dialog-description">
               Thank you for supporting this petition.
               <br />
-              Your support has been recorded in klaytn blockchain platform.
+              Your support has been saved in klaytn blockchain platform.
             </DialogContentText>
           </DialogContent>
           <DialogActions>

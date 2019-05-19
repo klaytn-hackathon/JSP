@@ -146,6 +146,12 @@ class New extends Component {
 
       const supportLimitCount = parseInt(signaturesLimitCount, 10);
 
+      if (this.wallet) {
+        // eslint-disable-next-line no-undef
+        const w = sessionStorage.getItem('walletInstance');
+        this.wallet = JSON.parse(w);
+      }
+
       const params = {
         author_id: this.wallet.address,
         title,
@@ -171,13 +177,14 @@ class New extends Component {
               from: this.wallet.address,
               gas: '20000000',
               value: supportLimitCount * 20000000,
-            }).on('receipt', () => {
-              onSuccess();
-
+            }).on('receipt', (receipt) => {
               this.setState({
                 redirect: true,
                 loading: false,
               });
+
+              axios.patch(`${process.env.PETITION_ADDRESS}`, { id: res.data.id, transaction_id: receipt.transactionHash });
+              onSuccess();
             }).on('error', (error) => {
               console.log('error', error);
             });

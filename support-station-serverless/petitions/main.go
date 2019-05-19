@@ -24,18 +24,15 @@ func router(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 		}
 	case "POST":
 		return create(req)
+	case "PATCH":
+		return update(req)
 	default:
 		return clientError(http.StatusMethodNotAllowed)
 	}
 }
 
 func index(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	queryString := map[string]string{}
-	queryString["limit"] = req.QueryStringParameters["limit"]
-	queryString["order"] = req.QueryStringParameters["order"]
-	queryString["offset"] = req.QueryStringParameters["offset"]
-
-	petitions, err := db.GetItems(&queryString)
+	petitions, err := db.GetItems(&req.QueryStringParameters)
 	if err != nil {
 		return serverError(err)
 	}
@@ -94,7 +91,7 @@ func create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 		return serverError(dbErr)
 	}
 
-	petitionJson, err := json.Marshal(petition)
+	petitionJSON, err := json.Marshal(petition)
 	if err != nil {
 		return serverError(err)
 	}
@@ -102,7 +99,31 @@ func create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
 		Headers:    headers(),
-		Body: string(petitionJson),
+		Body: string(petitionJSON),
+	}, nil
+}
+
+func update(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	pt := new(models.Petition)
+	err := json.Unmarshal([]byte(req.Body), pt)
+	if err != nil {
+		errorLogger.Fatalln(err)
+		return clientError(http.StatusUnprocessableEntity)
+	}
+
+	if err != nil {
+		errorLogger.Fatalln(err)
+		return clientError(http.StatusNotFound)
+	}
+
+	dbErr := db.UpdateItem(pt)
+	if dbErr != nil {
+		return serverError(dbErr)
+	}
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: 204,
+		Headers:    headers(),
 	}, nil
 }
 

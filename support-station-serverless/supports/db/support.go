@@ -68,7 +68,30 @@ func PutItem(support *models.Support) (*models.Support, error) {
 	support.UpdatedAt = time.Now()
 
 	temp := models.Support{}
-	db.FirstOrCreate(&temp, support)
+	db.Where("petition_id = ? AND signer_id = ?", support.PetitionID, support.SignerID).Find(&temp)
+	if temp.ID > 0 {
+		return &temp, nil
+	}
+
+	db.Create(support)
 
 	return support, nil
+}
+
+func UpdateItem(support *models.Support) error {
+	db, err := GetConnection()
+	defer db.Close()
+
+	if err != nil {
+		errorLogger.Println(err.Error())
+		return err
+	}
+
+	s := models.Support{}
+	db = db.First(&s, support.ID)
+
+	s.TransactionID = support.TransactionID
+	db.Save(&s)
+
+	return nil
 }

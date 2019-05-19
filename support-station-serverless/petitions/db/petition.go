@@ -90,3 +90,21 @@ func PutItem(petition *models.Petition) (*models.Petition, error) {
 
 	return petition, nil
 }
+
+func UpdateItem(petition *models.Petition) error {
+	db, err := GetConnection()
+	defer db.Close()
+
+	if err != nil {
+		errorLogger.Println(err.Error())
+		return err
+	}
+
+	p := models.Petition{}
+	db = db.First(&p, petition.ID)
+
+	p.TransactionID = petition.TransactionID
+	db.Save(&p)
+
+	return nil
+}

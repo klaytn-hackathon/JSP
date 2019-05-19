@@ -20,16 +20,15 @@ func router(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 		return index(req)
 	case "POST":
 		return create(req)
+	case "PATCH":
+		return update(req)
 	default:
 		return clientError(http.StatusMethodNotAllowed)
 	}
 }
 
 func index(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	queryString := map[string]string{}
-	queryString["limit"] = req.QueryStringParameters["limit"]
-
-	supports, err := db.GetItems(&queryString)
+	supports, err := db.GetItems(&req.QueryStringParameters)
 	if err != nil {
 		return serverError(err)
 	}
@@ -74,6 +73,30 @@ func create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 		StatusCode: http.StatusCreated,
 		Headers:    headers(),
 		Body: string(supportJSON),
+	}, nil
+}
+
+func update(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	sp := new(models.Support)
+	err := json.Unmarshal([]byte(req.Body), sp)
+	if err != nil {
+		errorLogger.Fatalln(err)
+		return clientError(http.StatusUnprocessableEntity)
+	}
+
+	if err != nil {
+		errorLogger.Fatalln(err)
+		return clientError(http.StatusNotFound)
+	}
+
+	dbErr := db.UpdateItem(sp)
+	if dbErr != nil {
+		return serverError(dbErr)
+	}
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: 204,
+		Headers:    headers(),
 	}, nil
 }
 
