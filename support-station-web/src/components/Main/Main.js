@@ -6,12 +6,6 @@ import TopContent from './TopContent';
 import MainContent from './MainContent';
 
 const styles = theme => ({
-  root: {
-    height: '100%',
-    minHeight: '1000px',
-    backgroundColor: '#ffffff',
-    boxShadow: '1px 0 10px 0 rgba(0, 0, 0, 0.03)',
-  },
   content: {
     padding: theme.spacing.unit * 4,
   },
@@ -22,11 +16,9 @@ function Main(props) {
   const { classes } = props;
 
   return (
-    <Grid container spacing={0} direction="column" className={classes.root}>
-      <Grid container direction="column" className={classes.content}>
-        <TopContent />
-        <MainContent />
-      </Grid>
+    <Grid container wrap="nowrap" direction="column" className={classes.content}>
+      <TopContent />
+      <MainContent />
     </Grid>
   );
 }

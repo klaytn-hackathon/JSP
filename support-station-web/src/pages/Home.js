@@ -21,11 +21,11 @@ function Home(props) {
     );
   return (
     <Fragment>
-      <Grid container spacing={0}>
-        <Grid item xs>
+      <Grid container direction="row" spacing={0} style={{ height: '100vh' }}>
+        <Grid item xs={12} md={2}>
           <Menu />
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={12} md>
           <Main />
         </Grid>
       </Grid>

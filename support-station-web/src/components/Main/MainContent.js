@@ -106,7 +106,7 @@ class MainContent extends Component {
           {petitions.length === 0 ? <CircularProgress /> : ''}
           {
             petitions.map(petition => (
-              <Grid item xs={4} key={petition.id}>
+              <Grid item xs={12} sm={4} key={petition.id}>
                 <PetitionCard
                   id={petition.id}
                   title={petition.title}

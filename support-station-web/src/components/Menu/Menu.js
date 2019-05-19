@@ -3,14 +3,16 @@ import { withStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import { ViewQuilt, Timer, TimerOff } from '@material-ui/icons';
 
-const styles = () => ({
+const styles = theme => ({
   root: {
     height: '100%',
     backgroundColor: '#e8eef7',
     boxShadow: '1px 0 10px 0 rgba(0, 0, 0, 0.03)',
+    [theme.breakpoints.down('sm')]: {
+      height: 'auto',
+    },
   },
   logo: {
-    height: '10vh',
     textAlign: 'center',
     boxShadow: '1px 0 3px 0 rgba(0, 0, 0, 0.1)',
   },
@@ -21,6 +23,9 @@ const styles = () => ({
   subMenu: {
     textAlign: 'center',
     marginTop: '28px',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
   },
   icon: {
     color: '#94979b',
