@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, withStyles } from '@material-ui/core';
+import { Grid, withStyles, LinearProgress } from '@material-ui/core';
 import axios from 'axios';
 import moment from 'moment';
 import parser from 'html-react-parser';
@@ -8,33 +8,47 @@ import SupportButton from '../components/SupportButton';
 
 const styles = theme => ({
   petitionContainer: {
-    backgroundColor: 'white',
-    padding: '50px',
-    border: '1px solid #e0e0e0',
-    borderRadius: '4px',
+    padding: theme.spacing.unit * 10,
     textAlign: 'center',
-    margin: '100px 0 100px 0',
+
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+      padding: '0',
+      margin: '0',
+    },
+  },
+  containerMeta: {
+    textAlign: 'left',
   },
   titleText: {
     fontSize: '40px',
+    textAlign: 'center',
     fontWeight: 'bold',
-    [theme.breakpoints.down('lg')]: {
-      fontSize: '40px',
+    padding: '30px',
+    [theme.breakpoints.down('md')]: {
+      fontSize: '30px',
+      padding: '15px',
     },
-    margin: '0 auto 45px auto',
   },
   supportCountText: {
-    fontSize: '26px',
-    marginBottom: '40px',
+    fontSize: '16px',
+    marginBottom: '10px',
+  },
+  petitionCount: {
+    marginBottom: '20px',
   },
   count: {
-    color: '#034497',
+    fontWeight: 'bold',
   },
   petitionInfo: {
     padding: '15px',
     border: '1px solid #d1d1d1',
     borderRadius: '4px',
     backgroundColor: '#f6f6f6',
+    [theme.breakpoints.down('lg')]: {
+      padding: '5px',
+      fontSize: '15px',
+    },
   },
   petitionInfoText: {
     fontWeight: '600',
@@ -46,6 +60,10 @@ const styles = theme => ({
   petitionAuthorNameText: {
     color: '#034497',
     fontWeight: 'bolder',
+
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
   petitionContentContainer: {
     marginTop: '70px',
@@ -115,79 +133,85 @@ class Show extends Component {
     const petitionEndAt = moment(petition.end_date).format('YYYY-MM-DD');
     const content = (petition.content && parser(petition.content)) || '';
 
+    const completePercentage = Math.ceil(supportCount / petition.support_limit_count * 100);
+
     return (
-      <Grid
-        container
-        spacing={40}
-        direction="column"
-        justify="center"
-        alignItems="center"
-        className={classes.petitionContainer}
-      >
-        <Grid
-          item
-          xs={12}
-        >
-          <h3 className={classes.titleText}>
-            {petition.title}
-          </h3>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-        >
-          <div className={classes.supportCountText}>
-            Signatures count: [
-            <span className={classes.count}>{supportCount}</span>
-            ]
-          </div>
-        </Grid>
+      <Fragment>
+        <div className={classes.titleText}>
+          {petition.title}
+        </div>
         <Grid
           container
-          direction="row"
-          className={classes.petitionInfo}
+          spacing={40}
+          className={classes.petitionContainer}
         >
-          <Grid item xs={6}>
-            <span className={classes.petitionInfoText}>
-              Petition Start At: &nbsp;
-            </span>
-            {petitionCreatedAt}
+          <Grid
+            item
+            xs={12}
+            md={7}
+          >
+            <div className={classes.petitionContent}>
+              {content}
+            </div>
           </Grid>
-          <Grid item xs={6}>
-            <span className={classes.petitionInfoText}>
-              Petition End At: &nbsp;
-            </span>
-            {petitionEndAt}
+
+          <Grid
+            item
+            xs={12}
+            md={5}
+            className={classes.containerMeta}
+          >
+            <Grid
+              container
+              direction="column"
+              wrap="nowrap"
+            >
+              <Grid
+                item
+                className={classes.petitionCount}
+              >
+                <div className={classes.supportCountText}>
+                  <span className={classes.count}>
+                    {supportCount}
+                    &nbsp;Have signed.&nbsp;
+                  </span>
+                  {"Let's go to "}
+                  {petition.support_limit_count}
+                </div>
+                <LinearProgress variant="determinate" value={completePercentage} />
+              </Grid>
+
+              <Grid item>
+                <span className={classes.petitionInfoText}>
+                Petition Start At: &nbsp;
+                </span>
+                {petitionCreatedAt}
+              </Grid>
+              <Grid item>
+                <span className={classes.petitionInfoText}>
+                Petition End At: &nbsp;
+                </span>
+                {petitionEndAt}
+              </Grid>
+
+            </Grid>
+            <Grid
+              item
+              className={classes.petitionAuthorText}
+            >
+              User
+              <div className={classes.petitionAuthorNameText}>{petition.author_id}</div>
+              started this petition.
+            </Grid>
+            <div style={{ textAlign: 'center' }}>
+              <SupportButton
+                petitionID={match.params.id}
+                onSupportCompleted={this.supportCompleted}
+              />
+            </div>
           </Grid>
         </Grid>
-        <Grid
-          item
-          className={classes.petitionAuthorText}
-        >
-          User&nbsp;
-          <span className={classes.petitionAuthorNameText}>{petition.author_id}</span>
-          &nbsp; started this petition.
-        </Grid>
-        <Grid
-          container
-          direction="column"
-          justify="flex-start"
-          className={classes.petitionContentContainer}
-        >
-          <Grid item>
-            <h4 className={classes.petitionContentHeader}>Content</h4>
-          </Grid>
-          <Grid item className={classes.petitionContent}>
-            {content}
-          </Grid>
-          <Grid item>
-            <SupportButton
-              petitionID={match.params.id}
-              onSupportCompleted={this.supportCompleted}
-            />
-          </Grid>
-        </Grid>
-      </Grid>
+      </Fragment>
     );
   }
 }

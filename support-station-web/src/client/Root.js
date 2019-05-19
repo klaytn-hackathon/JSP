@@ -4,7 +4,9 @@ import App from '../components/App';
 
 const Root = () => (
   <BrowserRouter>
-    <App />
+    <div style={{ height: '100vh', background: 'white' }}>
+      <App />
+    </div>
   </BrowserRouter>
 );
 
