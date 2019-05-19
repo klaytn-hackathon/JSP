@@ -146,7 +146,7 @@ class New extends Component {
 
       const supportLimitCount = parseInt(signaturesLimitCount, 10);
 
-      if (this.wallet) {
+      if (!this.wallet) {
         // eslint-disable-next-line no-undef
         const w = sessionStorage.getItem('walletInstance');
         this.wallet = JSON.parse(w);
