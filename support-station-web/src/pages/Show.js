@@ -6,6 +6,7 @@ import {
 import axios from 'axios';
 import moment from 'moment';
 import parser from 'html-react-parser';
+import QRCode from 'qrcode.react';
 import SupportButton from '../components/SupportButton';
 
 const styles = theme => ({
@@ -83,6 +84,14 @@ const styles = theme => ({
   petitionVerificationButton: {
     marginTop: '10px',
   },
+  qrCode: {
+    textAlign: 'center',
+    marginTop: '60px',
+  },
+  qrCodeText: {
+    marginBottom: '20px',
+    fontWeight: '300',
+  },
 });
 
 class Show extends Component {
@@ -148,6 +157,9 @@ class Show extends Component {
     const content = (petition.content && parser(petition.content)) || '';
 
     const completePercentage = Math.ceil(supportCount / petition.support_limit_count * 100);
+
+    // eslint-disable-next-line no-undef
+    const currnetURL = window.location.href;
 
     return (
       <Fragment>
@@ -231,6 +243,10 @@ class Show extends Component {
                   Verify this petition
               </Button>
             </div>
+            <Grid item className={classes.qrCode}>
+              <div className={classes.qrCodeText}>Share this petition with friends!</div>
+              <QRCode value={currnetURL} />
+            </Grid>
           </Grid>
         </Grid>
       </Fragment>
