@@ -145,7 +145,7 @@ class SupportButton extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, supportEnd } = this.props;
     const {
       open, supportDone, alreadySupported, supportLoading,
     } = this.state;
@@ -159,7 +159,7 @@ class SupportButton extends Component {
             color="primary"
             className={classes.loginButton}
             onClick={this.onSupportButtonClicked}
-            disabled={supportLoading}
+            disabled={supportLoading || supportEnd}
           >
             {alreadySupported ? 'Already supported' : 'Support this petition'}
           </Button>
@@ -177,6 +177,7 @@ class SupportButton extends Component {
             color="primary"
             className={classes.loginButton}
             onClick={this.handleLogin}
+            disabled={supportEnd}
           >
             Support this petition
           </Button>
@@ -220,6 +221,7 @@ SupportButton.propTypes = {
   classes: PropTypes.object.isRequired,
   petitionID: PropTypes.string.isRequired,
   onSupportCompleted: PropTypes.func.isRequired,
+  supportEnd: PropTypes.bool.isRequired,
 };
 
 

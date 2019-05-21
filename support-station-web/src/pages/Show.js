@@ -92,6 +92,11 @@ const styles = theme => ({
     marginBottom: '20px',
     fontWeight: '300',
   },
+  petitionEnd: {
+    color: '#2196f3',
+    fontWeight: 'bold',
+    marginBottom: '20px',
+  },
 });
 
 class Show extends Component {
@@ -158,6 +163,33 @@ class Show extends Component {
 
     const completePercentage = Math.ceil(supportCount / petition.support_limit_count * 100);
 
+    const isEnded = moment().unix() > moment(petition.end_date).add(1, 'days').unix();
+
+    const petitionResult = isEnded ? (
+      <div className={classes.petitionEnd}>
+        This petition made change with
+        {' '}
+        {supportCount}
+        {' '}
+         supporters!
+      </div>
+    ) : (
+      <Grid
+        item
+        className={classes.petitionCount}
+      >
+        <div className={classes.supportCountText}>
+          <span className={classes.count}>
+            {supportCount}
+          &nbsp;Have signed.&nbsp;
+          </span>
+          {"Let's go to "}
+          {petition.support_limit_count}
+        </div>
+        <LinearProgress variant="determinate" value={completePercentage} />
+      </Grid>
+    );
+
     // eslint-disable-next-line no-undef
     const currnetURL = window.location.href;
 
@@ -192,21 +224,7 @@ class Show extends Component {
               direction="column"
               wrap="nowrap"
             >
-              <Grid
-                item
-                className={classes.petitionCount}
-              >
-                <div className={classes.supportCountText}>
-                  <span className={classes.count}>
-                    {supportCount}
-                    &nbsp;Have signed.&nbsp;
-                  </span>
-                  {"Let's go to "}
-                  {petition.support_limit_count}
-                </div>
-                <LinearProgress variant="determinate" value={completePercentage} />
-              </Grid>
-
+              {petitionResult}
               <Grid item>
                 <span className={classes.petitionInfoText}>
                 Petition Start At: &nbsp;
@@ -233,6 +251,7 @@ class Show extends Component {
               <SupportButton
                 petitionID={match.params.id}
                 onSupportCompleted={this.supportCompleted}
+                supportEnd={isEnded}
               />
               <Button
                 variant="contained"

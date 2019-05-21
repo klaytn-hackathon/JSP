@@ -19,6 +19,10 @@ const styles = () => ({
     padding: '20px',
     fontWeight: 'bold',
     fontFamily: 'Spoqa Han Sans, Spoqa Han Sans JP, Sans-serif',
+
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
   cardFooter: {
     color: '#52575a',
