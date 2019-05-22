@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { CalendarToday, SupervisorAccount } from '@material-ui/icons';
 import {
-  Grid, Card, CardContent, CardHeader, Button,
+  Grid, Card, CardContent, CardHeader, Chip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -48,19 +48,26 @@ const styles = () => ({
 function PetitionCard(props) {
   // eslint-disable-next-line react/prop-types
   const {
-    id, classes, title, createdAt, supportCount,
+    id, classes, title, createdAt, supportCount, endAt,
   } = props;
 
   const formattedDate = moment.utc(createdAt).local().format('YYYY-MM-DD');
+
+  const isEnded = moment().unix() > moment(endAt).add(1, 'days').unix();
+
+  const stateChip = isEnded ? (
+    <Chip label="Expired" />
+  ) : (
+    <Chip label="In Progress" color="primary" />
+  );
+
   return (
     <Fragment>
       <Link style={{ textDecoration: 'none' }} to={`/petitions/${id}`}>
         <Card>
           <CardHeader
             avatar={(
-              <Button variant="contained" className={classes.cardTag}>
-                <div className={classes.cardTagText}>Environment</div>
-              </Button>
+              stateChip
             )}
           />
           <CardContent className={classes.cardTitle}>{title}</CardContent>
@@ -110,6 +117,7 @@ PetitionCard.propTypes = {
   title: PropTypes.string,
   createdAt: PropTypes.string,
   supportCount: PropTypes.number,
+  endAt: PropTypes.string.isRequired,
 };
 
 export default withStyles(styles)(PetitionCard);

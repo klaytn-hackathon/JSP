@@ -111,6 +111,7 @@ class MainContent extends Component {
                   id={petition.id}
                   title={petition.title}
                   createdAt={petition.created_at}
+                  endAt={petition.end_date}
                   supportCount={petition.support_count}
                 />
               </Grid>

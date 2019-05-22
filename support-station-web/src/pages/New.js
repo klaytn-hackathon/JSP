@@ -16,6 +16,7 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import Contract from '../klaytn/petition_contract';
 import AuthPage from './AuthPage';
+import { cav } from '../klaytn/caver';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const styles = theme => ({
@@ -83,6 +84,7 @@ class New extends Component {
       signaturesLimitCount: 0,
       endDate: new Date(moment().format('YYYY-MM-DD')),
       loading: false,
+      fee: 0,
     };
 
     // eslint-disable-next-line no-undef
@@ -115,6 +117,7 @@ class New extends Component {
     this.onNumberFieldChange = (event) => {
       this.setState({
         signaturesLimitCount: event.target.value,
+        fee: event.target.value * 20000000 + parseInt(cav.utils.toPeb(`${process.env.TRANSACTION_FEE}`, 'KLAY'), 10),
       });
     };
 
@@ -147,7 +150,7 @@ class New extends Component {
       event.preventDefault();
 
       const {
-        editorState, title, signaturesLimitCount, endDate,
+        editorState, title, signaturesLimitCount, endDate, fee,
       } = this.state;
       const { onSuccess, onFailed } = this.props;
 
@@ -183,7 +186,7 @@ class New extends Component {
             ).send({
               from: this.wallet.address,
               gas: '20000000',
-              value: supportLimitCount * 20000000,
+              value: fee,
             }).on('receipt', (receipt) => {
               this.setState({
                 redirect: true,
@@ -217,12 +220,15 @@ class New extends Component {
     // eslint-disable-next-line react/prop-types
     const { classes, isLoggedIn } = this.props;
     const {
-      editorState, title, redirect, signaturesLimitCount, endDate, loading,
+      editorState, title, redirect, signaturesLimitCount, endDate, loading, fee,
     } = this.state;
 
     if (redirect) {
       return <Redirect to="/" />;
     }
+
+    const totalFee = fee / cav.utils.toPeb('1', 'KLAY');
+    const feeText = `${totalFee} KLAY will be paid.`;
 
     return (
       <Fragment>
@@ -269,6 +275,7 @@ class New extends Component {
                     value={signaturesLimitCount}
                     type="number"
                     className={classes.signaturesLimit}
+                    helperText={feeText}
                     onChange={this.onNumberFieldChange}
                   />
                 </Grid>
