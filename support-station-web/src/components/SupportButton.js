@@ -12,7 +12,7 @@ import { cav } from '../klaytn/caver';
 const styles = theme => ({
   loginButton: {
     padding: theme.spacing.unit * 2,
-    marginTop: '15px',
+    marginTop: '35px',
   },
   supportButtonWrapper: {
     position: 'relative',

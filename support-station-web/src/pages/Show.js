@@ -38,7 +38,7 @@ const styles = theme => ({
     marginBottom: '10px',
   },
   petitionCount: {
-    marginBottom: '20px',
+    marginBottom: '40px',
   },
   count: {
     fontWeight: 'bold',
@@ -57,7 +57,7 @@ const styles = theme => ({
     fontWeight: '600',
   },
   petitionAuthorText: {
-    marginTop: '10px',
+    marginTop: '20px',
     color: '#737273',
   },
   petitionAuthorNameText: {

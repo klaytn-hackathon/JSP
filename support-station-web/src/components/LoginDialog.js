@@ -60,7 +60,7 @@ class LoginDialog extends Component {
         <DialogContent id="max-width-dialog-title">
           <DialogContentText className={classes.dialogContent}>
             <GoogleLogin
-              clientId="155990669240-40kbd3r90bu3r4tpmqpvs2ciru9eg1la.apps.googleusercontent.com"
+              clientId="155990669240-fkno501m2m1a93dnmfljdkpj8er2fdio.apps.googleusercontent.com"
               buttonText="Login with Google"
               onSuccess={this.googleResponse}
               onFailure={this.onFailure}
