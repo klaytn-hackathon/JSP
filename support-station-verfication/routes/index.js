@@ -1,5 +1,5 @@
 const express = require('express');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const PetitionFetcher = require('../services/petition_fetcher');
 const SupportFetcher = require('../services/support_fetcher');
 
@@ -8,7 +8,7 @@ const router = express.Router();
 function formatDate(supports) {
   supports.forEach((support) => {
     // eslint-disable-next-line no-param-reassign
-    support.created_at = moment(support.created_at).format('YYYY-MM-DD h:mm:ss a');
+    support.created_at = moment(support.created_at).tz('Asia/Seoul').format('YYYY-MM-DD h:mm:ssa z');
   });
 }
 
