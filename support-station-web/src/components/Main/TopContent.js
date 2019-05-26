@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { Grid, Typography, CircularProgress } from '@material-ui/core';
 import queryString from 'query-string';
 import axios from 'axios';
+import moment from 'moment';
 import PetitionCard from './PetitionCard';
 
 const styles = () => ({
@@ -47,15 +48,18 @@ class TopContent extends Component {
     // eslint-disable-next-line react/prop-types
     const { classes } = this.props;
     const { petitions } = this.state;
+
+    const validPetitions = petitions.filter(p => moment().unix() < moment(p.end_date).add(1, 'days').unix());
+
     return (
       <Grid container>
         <Typography gutterBottom variant="h5" component="h2" className={classes.topContentText}>
         Top 3 Petitions
         </Typography>
         <Grid container spacing={16} direction="row">
-          {petitions.length === 0 ? <CircularProgress /> : ''}
+          {validPetitions.length === 0 ? <CircularProgress /> : ''}
           {
-            petitions.map(petition => (
+            validPetitions.map(petition => (
               <Grid item xs={12} lg={4} key={petition.id}>
                 <PetitionCard
                   id={petition.id}

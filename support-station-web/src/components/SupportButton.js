@@ -20,9 +20,8 @@ const styles = theme => ({
   buttonProgress: {
     position: 'absolute',
     top: '50%',
-    left: '50%',
-    marginTop: -10,
-    marginLeft: -12,
+    right: '15%',
+    marginRight: 15,
   },
 });
 
