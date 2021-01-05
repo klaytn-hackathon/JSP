@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.458.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "caver-js": "^0.8.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
