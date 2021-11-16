@@ -7,7 +7,7 @@
     "start": "pm2 start app.js"
   },
   "dependencies": {
-    "aws-sdk": "^2.458.0",
+    "aws-sdk": "^2.814.0",
     "axios": "^0.18.0",
     "caver-js": "^0.8.2",
     "cookie-parser": "~1.4.4",
